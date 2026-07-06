@@ -1,0 +1,1366 @@
+{
+  "patients": [
+    {
+      "patient_id": 1,
+      "first_name": "Juan",
+      "last_name": "Dela Cruz",
+      "age": 45,
+      "gender": "Male",
+      "contact": "09171234567",
+      "municipality": "Baler",
+      "queue_token": "OPD-MED-001",
+      "queue_status": "not_queued",
+      "queue_timestamp": "2026-06-21T08:00:00.000Z"
+    },
+    {
+      "patient_id": 2,
+      "first_name": "Maria",
+      "last_name": "Santos",
+      "age": 62,
+      "gender": "Female",
+      "contact": "09187654321",
+      "municipality": "Maria Aurora",
+      "queue_token": "OPD-MED-002",
+      "queue_status": "done",
+      "queue_timestamp": "2026-06-21T08:15:00.000Z"
+    },
+    {
+      "patient_id": 3,
+      "first_name": "Pedro",
+      "last_name": "Reyes",
+      "age": 28,
+      "gender": "Male",
+      "contact": "09192345678",
+      "municipality": "Dipaculao",
+      "queue_token": "OPD-MED-003",
+      "queue_status": "done",
+      "queue_timestamp": "2026-06-21T08:30:00.000Z"
+    },
+    {
+      "patient_id": 4,
+      "first_name": "Ana",
+      "last_name": "Cruz",
+      "age": 70,
+      "gender": "Female",
+      "contact": "09203456789",
+      "municipality": "San Luis",
+      "queue_token": "OPD-MED-004",
+      "queue_status": "in_consultation",
+      "queue_timestamp": "2026-06-21T08:45:00.000Z"
+    },
+    {
+      "patient_id": 5,
+      "first_name": "Jose",
+      "last_name": "Aquino",
+      "age": 55,
+      "gender": "Male",
+      "contact": "09214567890",
+      "municipality": "Casiguran",
+      "queue_token": "OPD-MED-005",
+      "queue_status": "not_queued",
+      "queue_timestamp": ""
+    },
+    {
+      "patient_id": 6,
+      "first_name": "Elizabeth",
+      "last_name": "Mendoza",
+      "age": 38,
+      "gender": "Female",
+      "contact": "09225678901",
+      "municipality": "Dinalungan",
+      "queue_token": "OPD-MED-006",
+      "queue_status": "not_queued",
+      "queue_timestamp": ""
+    },
+    {
+      "patient_id": 7,
+      "first_name": "Ramon",
+      "last_name": "Bautista",
+      "age": 67,
+      "gender": "Male",
+      "contact": "09236789012",
+      "municipality": "Dilasag",
+      "queue_token": "OPD-MED-007",
+      "queue_status": "not_queued",
+      "queue_timestamp": ""
+    },
+    {
+      "patient_id": 8,
+      "first_name": "Corazon",
+      "last_name": "Aquino",
+      "age": 80,
+      "gender": "Female",
+      "contact": "09247890123",
+      "municipality": "Dingalan",
+      "queue_token": "OPD-MED-008",
+      "queue_status": "not_queued",
+      "queue_timestamp": ""
+    },
+    {
+      "patient_id": 9,
+      "first_name": "Manuel",
+      "last_name": "Quezon",
+      "age": 50,
+      "gender": "Male",
+      "contact": "09258901234",
+      "municipality": "Baler",
+      "queue_token": "OPD-MED-099",
+      "queue_status": "not_queued",
+      "queue_timestamp": ""
+    },
+    {
+      "patient_id": 10,
+      "first_name": "Gloria",
+      "last_name": "Macapagal",
+      "age": 73,
+      "gender": "Female",
+      "contact": "09269012345",
+      "municipality": "Maria Aurora",
+      "queue_token": "OPD-MED-010",
+      "queue_status": "not_queued",
+      "queue_timestamp": ""
+    },
+    {
+      "patient_id": 11,
+      "first_name": "Anthony",
+      "last_name": "Cordial",
+      "age": 18,
+      "gender": "Male",
+      "contact": "09811999466",
+      "municipality": "Baler",
+      "queue_token": "OPD-MED-011",
+      "queue_status": "in_consultation",
+      "queue_timestamp": "2026-06-21T13:05:49.797Z"
+    },
+    {
+      "patient_id": 12,
+      "first_name": "Juan",
+      "last_name": "Dela Cruz",
+      "age": 45,
+      "gender": "Male",
+      "contact": "09171234567",
+      "municipality": "Baler",
+      "queue_token": "OPD-MED-012",
+      "queue_status": "waiting",
+      "queue_timestamp": "2026-06-21T14:43:03.550Z"
+    },
+    {
+      "patient_id": 13,
+      "first_name": "Maria",
+      "last_name": "Santos",
+      "age": 35,
+      "gender": "Female",
+      "contact": "0917-123-4567",
+      "municipality": "Baler",
+      "reason_for_visit": "General Consultation",
+      "appointment_date": "2026-06-21",
+      "queue_token": "OPD-MED-013",
+      "queue_status": "waiting",
+      "queue_timestamp": "2026-06-21T23:44:21.379Z"
+    },
+    {
+      "patient_id": 14,
+      "first_name": "test",
+      "last_name": "123",
+      "age": 21,
+      "gender": "Male",
+      "contact": "09811999466",
+      "municipality": "Baler",
+      "reason_for_visit": "General Consultation",
+      "appointment_date": "2026-06-22",
+      "queue_token": "OPD-MED-014",
+      "queue_status": "in_consultation",
+      "queue_timestamp": "2026-06-22T00:47:50.865Z"
+    },
+    {
+      "patient_id": 15,
+      "first_name": "Anthony",
+      "last_name": "Cordial",
+      "age": 18,
+      "gender": "Male",
+      "contact": "09811999466",
+      "municipality": "Baler",
+      "reason_for_visit": "General Consultation",
+      "appointment_date": "2026-06-30",
+      "queue_token": "OPD-MED-015",
+      "queue_status": "pending_approval",
+      "queue_timestamp": "2026-06-30T13:14:31.322Z"
+    },
+    {
+      "patient_id": 16,
+      "first_name": "Anthony",
+      "last_name": "Cordial",
+      "age": 18,
+      "gender": "Male",
+      "contact": "09811999466",
+      "municipality": "Baler",
+      "reason_for_visit": "General Consultation",
+      "appointment_date": "2026-07-03",
+      "queue_token": "OPD-MED-016",
+      "queue_status": "denied",
+      "queue_timestamp": "2026-07-03T00:51:02.677Z"
+    },
+    {
+      "patient_id": 17,
+      "first_name": "Anthony",
+      "last_name": "Cordial",
+      "age": 18,
+      "gender": "Male",
+      "contact": "09811999466",
+      "municipality": "Baler",
+      "reason_for_visit": "General Consultation",
+      "appointment_date": "2026-07-03",
+      "queue_token": "OPD-MED-017",
+      "queue_status": "denied",
+      "queue_timestamp": "2026-07-03T00:58:07.409Z"
+    },
+    {
+      "patient_id": 18,
+      "first_name": "Anthony",
+      "last_name": "Cordial",
+      "age": 18,
+      "gender": "Male",
+      "contact": "09811999466",
+      "municipality": "Baler",
+      "reason_for_visit": "General Consultation",
+      "appointment_date": "2026-07-03",
+      "queue_token": "OPD-MED-018",
+      "queue_status": "denied",
+      "queue_timestamp": "2026-07-03T01:05:40.022Z"
+    },
+    {
+      "patient_id": 19,
+      "first_name": "Anthony",
+      "last_name": "Cordial",
+      "age": 18,
+      "gender": "Male",
+      "contact": "09811999466",
+      "municipality": "Baler",
+      "reason_for_visit": "General Consultation",
+      "appointment_date": "2026-07-03",
+      "queue_token": "OPD-MED-019",
+      "queue_status": "denied",
+      "queue_timestamp": "2026-07-03T01:12:07.413Z"
+    },
+    {
+      "patient_id": 20,
+      "first_name": "Anthony",
+      "last_name": "Cordial",
+      "age": 18,
+      "gender": "Male",
+      "contact": "09811999466",
+      "municipality": "Baler",
+      "reason_for_visit": "General Consultation",
+      "appointment_date": "2026-07-03",
+      "queue_token": "OPD-MED-020",
+      "queue_status": "denied",
+      "queue_timestamp": "2026-07-03T01:20:15.597Z"
+    },
+    {
+      "patient_id": 21,
+      "first_name": "Anthony",
+      "last_name": "Cordial",
+      "age": 18,
+      "gender": "Male",
+      "contact": "09811999466",
+      "municipality": "Baler",
+      "reason_for_visit": "General Consultation",
+      "appointment_date": "2026-07-03",
+      "queue_token": "OPD-MED-021",
+      "queue_status": "denied",
+      "queue_timestamp": "2026-07-03T01:26:30.204Z"
+    },
+    {
+      "patient_id": 22,
+      "first_name": "Anthony",
+      "last_name": "Cordial",
+      "age": 18,
+      "gender": "Male",
+      "contact": "09811999466",
+      "municipality": "Baler",
+      "reason_for_visit": "General Consultation",
+      "appointment_date": "2026-07-03",
+      "queue_token": "OPD-MED-022",
+      "queue_status": "denied",
+      "queue_timestamp": "2026-07-03T01:28:01.558Z"
+    },
+    {
+      "patient_id": 23,
+      "first_name": "Anthony",
+      "last_name": "Cordial",
+      "age": 18,
+      "gender": "Male",
+      "contact": "09811999466",
+      "municipality": "Baler",
+      "reason_for_visit": "General Consultation",
+      "appointment_date": "2026-07-03",
+      "queue_token": "OPD-MED-023",
+      "queue_status": "denied",
+      "queue_timestamp": "2026-07-03T01:32:03.840Z"
+    }
+  ],
+  "admissions": [
+    {
+      "id": 1,
+      "patient_id": 1,
+      "bed_id": "W1-B01",
+      "ward": 1,
+      "bed": 1,
+      "admission_date": "2026-06-20T10:00:00.000Z",
+      "status": "discharged",
+      "diagnosis": "Hypertensive Urgency, CKD Stage 3"
+    },
+    {
+      "id": 2,
+      "patient_id": 5,
+      "bed_id": "W1-B02",
+      "ward": 1,
+      "bed": 2,
+      "admission_date": "2026-06-19T14:30:00.000Z",
+      "status": "discharged",
+      "diagnosis": "Type 2 Diabetes, Diabetic Ketoacidosis"
+    },
+    {
+      "id": 3,
+      "patient_id": 6,
+      "bed_id": "W2-B01",
+      "ward": 2,
+      "bed": 1,
+      "admission_date": "2026-06-21T09:00:00.000Z",
+      "status": "active",
+      "diagnosis": "Acute Appendicitis, Post-Op"
+    },
+    {
+      "id": 4,
+      "patient_id": 7,
+      "bed_id": "W1-B03",
+      "ward": 1,
+      "bed": 3,
+      "admission_date": "2026-06-18T11:00:00.000Z",
+      "status": "active",
+      "diagnosis": "Decompensated Heart Failure"
+    },
+    {
+      "id": 5,
+      "patient_id": 8,
+      "bed_id": "W1-B04",
+      "ward": 1,
+      "bed": 4,
+      "admission_date": "2026-06-17T15:00:00.000Z",
+      "status": "discharged",
+      "diagnosis": "Community-Acquired Pneumonia"
+    },
+    {
+      "id": 1782048494451,
+      "patient_id": 11,
+      "bed_id": "W2-B02",
+      "ward": 2,
+      "bed": 2,
+      "admission_date": "2026-06-21T13:28:14.451Z",
+      "status": "discharged",
+      "diagnosis": "Pending clinical assessment"
+    }
+  ],
+  "lab_results": [
+    {
+      "id": 1,
+      "patient_id": 1,
+      "fbs": 110,
+      "creatinine": 1.8,
+      "hemoglobin": 11.2,
+      "wbc": 8500,
+      "platelets": 250000,
+      "blood_pressure_systolic": 160,
+      "blood_pressure_diastolic": 95,
+      "timestamp": "2026-06-20T11:30:00.000Z",
+      "is_critical": true
+    },
+    {
+      "id": 2,
+      "patient_id": 5,
+      "fbs": 245,
+      "creatinine": 0.9,
+      "hemoglobin": 13.5,
+      "wbc": 12000,
+      "platelets": 310000,
+      "blood_pressure_systolic": 130,
+      "blood_pressure_diastolic": 80,
+      "timestamp": "2026-06-19T15:15:00.000Z",
+      "is_critical": true
+    },
+    {
+      "id": 3,
+      "patient_id": 6,
+      "fbs": 95,
+      "creatinine": 0.7,
+      "hemoglobin": 12,
+      "wbc": 14500,
+      "platelets": 290000,
+      "blood_pressure_systolic": 110,
+      "blood_pressure_diastolic": 70,
+      "timestamp": "2026-06-21T09:30:00.000Z",
+      "is_critical": false
+    },
+    {
+      "id": 4,
+      "patient_id": 7,
+      "fbs": 105,
+      "creatinine": 1.1,
+      "hemoglobin": 12.8,
+      "wbc": 7800,
+      "platelets": 180000,
+      "blood_pressure_systolic": 140,
+      "blood_pressure_diastolic": 85,
+      "timestamp": "2026-06-18T12:00:00.000Z",
+      "is_critical": false
+    },
+    {
+      "id": 5,
+      "patient_id": 8,
+      "fbs": 115,
+      "creatinine": 0.8,
+      "hemoglobin": 10.5,
+      "wbc": 16000,
+      "platelets": 220000,
+      "blood_pressure_systolic": 120,
+      "blood_pressure_diastolic": 75,
+      "timestamp": "2026-06-17T16:00:00.000Z",
+      "is_critical": false
+    },
+    {
+      "id": 1782048361549,
+      "patient_id": 11,
+      "fbs": 213,
+      "creatinine": 124,
+      "hemoglobin": 23,
+      "wbc": 1244,
+      "platelets": 200000,
+      "blood_pressure_systolic": 120,
+      "blood_pressure_diastolic": 80,
+      "timestamp": "2026-06-21T13:26:01.549Z",
+      "is_critical": true
+    },
+    {
+      "id": 1782048385120,
+      "patient_id": 11,
+      "fbs": 1222,
+      "creatinine": 231,
+      "hemoglobin": 23,
+      "wbc": 1244,
+      "platelets": 200000,
+      "blood_pressure_systolic": 120,
+      "blood_pressure_diastolic": 80,
+      "timestamp": "2026-06-21T13:26:25.120Z",
+      "is_critical": true
+    },
+    {
+      "id": 1782796800636,
+      "patient_id": 14,
+      "fbs": 4.2,
+      "creatinine": 0.37,
+      "hemoglobin": 12,
+      "wbc": 7500,
+      "platelets": 200000,
+      "blood_pressure_systolic": 120,
+      "blood_pressure_diastolic": 80,
+      "timestamp": "2026-06-30T05:20:00.636Z",
+      "is_critical": false
+    },
+    {
+      "id": 1782797917263,
+      "patient_id": 11,
+      "fbs": 56,
+      "creatinine": 20,
+      "hemoglobin": 12,
+      "wbc": 7500,
+      "platelets": 50,
+      "blood_pressure_systolic": 120,
+      "blood_pressure_diastolic": 80,
+      "timestamp": "2026-06-30T05:38:37.263Z",
+      "is_critical": true
+    },
+    {
+      "id": 1783255485449,
+      "patient_id": 1,
+      "fbs": 9.9,
+      "creatinine": 2.09,
+      "hemoglobin": 12,
+      "wbc": 7500,
+      "platelets": 200000,
+      "blood_pressure_systolic": 120,
+      "blood_pressure_diastolic": 80,
+      "timestamp": "2026-07-05T12:44:45.449Z",
+      "is_critical": true
+    }
+  ],
+  "diet_profiles": [
+    {
+      "id": 1,
+      "patient_id": 1,
+      "diet_type": "Renal",
+      "is_locked": true,
+      "ter_kcal": 1925,
+      "carbs_g": 289,
+      "protein_g": 48,
+      "fat_g": 64,
+      "notes": "Recalculated parameters: BMR 1400 kcal. Act level: 1.375."
+    },
+    {
+      "id": 2,
+      "patient_id": 5,
+      "diet_type": "Diabetic",
+      "is_locked": true,
+      "ter_kcal": 2000,
+      "carbs_g": 250,
+      "protein_g": 100,
+      "fat_g": 66,
+      "notes": "Auto-locked by high Fasting Blood Sugar (245 mg/dL) threshold intercept."
+    },
+    {
+      "id": 3,
+      "patient_id": 6,
+      "diet_type": "Standard",
+      "is_locked": false,
+      "ter_kcal": 2100,
+      "carbs_g": 288,
+      "protein_g": 78,
+      "fat_g": 70,
+      "notes": "Post-op regular soft diet."
+    },
+    {
+      "id": 4,
+      "patient_id": 7,
+      "diet_type": "Cardiac",
+      "is_locked": false,
+      "ter_kcal": 1700,
+      "carbs_g": 233,
+      "protein_g": 85,
+      "fat_g": 47,
+      "notes": "Low sodium, low fat, fluid restricted."
+    },
+    {
+      "id": 5,
+      "patient_id": 8,
+      "diet_type": "Standard",
+      "is_locked": false,
+      "ter_kcal": 1804,
+      "carbs_g": 248,
+      "protein_g": 68,
+      "fat_g": 60,
+      "notes": "Recalculated parameters: BMR 1503 kcal. Act level: 1.2."
+    },
+    {
+      "id": 1782048361549,
+      "patient_id": 11,
+      "diet_type": "Renal",
+      "is_locked": true,
+      "ter_kcal": 1800,
+      "carbs_g": 270,
+      "protein_g": 45,
+      "fat_g": 60,
+      "notes": "Auto-locked: Creatinine (20 mg/dL) exceeds normal (>1.2). Assigned Renal Therapy."
+    }
+  ],
+  "medications": [
+    {
+      "id": 1,
+      "patient_id": 1,
+      "drug_name": "Amlodipine",
+      "dosage": "10mg",
+      "frequency": "Once daily",
+      "route": "PO",
+      "prescribed_date": "2026-06-20T10:30:00.000Z"
+    },
+    {
+      "id": 2,
+      "patient_id": 1,
+      "drug_name": "Spironolactone",
+      "dosage": "25mg",
+      "frequency": "Once daily",
+      "route": "PO",
+      "prescribed_date": "2026-06-20T10:30:00.000Z"
+    },
+    {
+      "id": 3,
+      "patient_id": 5,
+      "drug_name": "Metformin",
+      "dosage": "500mg",
+      "frequency": "Twice daily",
+      "route": "PO",
+      "prescribed_date": "2026-06-19T14:45:00.000Z"
+    },
+    {
+      "id": 4,
+      "patient_id": 5,
+      "drug_name": "Insulin Glargine",
+      "dosage": "10 units",
+      "frequency": "At bedtime",
+      "route": "SC",
+      "prescribed_date": "2026-06-19T14:45:00.000Z"
+    },
+    {
+      "id": 5,
+      "patient_id": 7,
+      "drug_name": "Warfarin",
+      "dosage": "5mg",
+      "frequency": "Once daily at 6PM",
+      "route": "PO",
+      "prescribed_date": "2026-06-18T11:15:00.000Z"
+    },
+    {
+      "id": 1783255897546,
+      "patient_id": 1,
+      "drug_name": "Warfarin",
+      "dosage": "5mg",
+      "frequency": "Once daily",
+      "route": "PO",
+      "prescribed_date": "2026-07-05T12:51:37.546Z"
+    }
+  ],
+  "billing_ledger": [
+    {
+      "id": 1,
+      "patient_id": 1,
+      "items": [
+        {
+          "category": "Room",
+          "description": "Semi-Private Ward Bed W1-B01 (1 night)",
+          "amount": 1500
+        },
+        {
+          "category": "Lab",
+          "description": "Urinalysis, Serum Creatinine, Bun",
+          "amount": 1200
+        },
+        {
+          "category": "Pharmacy",
+          "description": "Spironolactone, Amlodipine Supply",
+          "amount": 800
+        },
+        {
+          "category": "Dietary",
+          "description": "Renal Therapeutic Meal Plan",
+          "amount": 900
+        },
+        {
+          "category": "Pharmacy",
+          "description": "asd asd ased",
+          "amount": 10000
+        }
+      ],
+      "base_total": 14400,
+      "philhealth_deduction": 0,
+      "statutory_discount": 0,
+      "net_total": 14400,
+      "icd10_code": "",
+      "status": "active"
+    },
+    {
+      "id": 2,
+      "patient_id": 5,
+      "items": [
+        {
+          "category": "Room",
+          "description": "Semi-Private Ward Bed W1-B02 (2 nights)",
+          "amount": 3000
+        },
+        {
+          "category": "Lab",
+          "description": "Fasting Blood Sugar, HbA1c",
+          "amount": 1500
+        },
+        {
+          "category": "Pharmacy",
+          "description": "Metformin, Insulin Pens, Syringes",
+          "amount": 3500
+        },
+        {
+          "category": "Dietary",
+          "description": "Diabetic Therapeutic Meal Plan",
+          "amount": 1800
+        }
+      ],
+      "base_total": 9800,
+      "philhealth_deduction": 0,
+      "statutory_discount": 0,
+      "net_total": 9800,
+      "icd10_code": "",
+      "status": "active"
+    },
+    {
+      "id": 3,
+      "patient_id": 6,
+      "items": [
+        {
+          "category": "Room",
+          "description": "Surgical Ward Bed W2-B01 (0 nights - Day Surgery)",
+          "amount": 1000
+        },
+        {
+          "category": "Lab",
+          "description": "Complete Blood Count, Blood Typing",
+          "amount": 900
+        },
+        {
+          "category": "Pharmacy",
+          "description": "Post-op Antibiotics & Analgesics",
+          "amount": 2800
+        },
+        {
+          "category": "Room",
+          "description": "Operating Room Utilization Fee",
+          "amount": 15000
+        },
+        {
+          "category": "Dietary",
+          "description": "Standard Soft Diet Tray Service",
+          "amount": 450
+        }
+      ],
+      "base_total": 20150,
+      "philhealth_deduction": 0,
+      "statutory_discount": 0,
+      "net_total": 20150,
+      "icd10_code": "",
+      "status": "active"
+    },
+    {
+      "id": 4,
+      "patient_id": 7,
+      "items": [
+        {
+          "category": "Room",
+          "description": "Semi-Private Ward Bed W1-B03 (3 nights)",
+          "amount": 4500
+        },
+        {
+          "category": "Lab",
+          "description": "Echocardiogram, Electrolytes panel",
+          "amount": 5500
+        },
+        {
+          "category": "Pharmacy",
+          "description": "Warfarin, Furosemide IV/PO",
+          "amount": 2200
+        },
+        {
+          "category": "Dietary",
+          "description": "Cardiac Sodium-Restricted Meal Plan",
+          "amount": 2700
+        }
+      ],
+      "base_total": 14900,
+      "philhealth_deduction": 0,
+      "statutory_discount": 0,
+      "net_total": 14900,
+      "icd10_code": "",
+      "status": "active"
+    },
+    {
+      "id": 5,
+      "patient_id": 8,
+      "items": [
+        {
+          "category": "Room",
+          "description": "Semi-Private Ward Bed W1-B04 (4 nights)",
+          "amount": 6000
+        },
+        {
+          "category": "Lab",
+          "description": "Chest X-Ray, CBC, Sputum Culture",
+          "amount": 3200
+        },
+        {
+          "category": "Pharmacy",
+          "description": "IV Antibiotics, Bronchodilator Nebules",
+          "amount": 8500
+        },
+        {
+          "category": "Dietary",
+          "description": "Standard High-Protein Meal Plan",
+          "amount": 3600
+        }
+      ],
+      "base_total": 21300,
+      "philhealth_deduction": 0,
+      "statutory_discount": 0,
+      "net_total": 21300,
+      "icd10_code": "",
+      "status": "settled"
+    },
+    {
+      "id": 1782048494451,
+      "patient_id": 11,
+      "items": [
+        {
+          "category": "Room",
+          "description": "Room Admission Ward 2 Bed 2",
+          "amount": 1500
+        }
+      ],
+      "base_total": 1500,
+      "philhealth_deduction": 0,
+      "statutory_discount": 0,
+      "net_total": 1500,
+      "icd10_code": "",
+      "status": "settled"
+    }
+  ],
+  "reference_data": {
+    "icd10_packages": [
+      {
+        "code": "E11.9",
+        "description": "Type 2 Diabetes Mellitus",
+        "case_rate": 15000
+      },
+      {
+        "code": "I10",
+        "description": "Essential Hypertension",
+        "case_rate": 9000
+      },
+      {
+        "code": "N18.9",
+        "description": "Chronic Kidney Disease",
+        "case_rate": 31000
+      },
+      {
+        "code": "I50.9",
+        "description": "Heart Failure",
+        "case_rate": 22750
+      },
+      {
+        "code": "J18.9",
+        "description": "Pneumonia",
+        "case_rate": 15000
+      },
+      {
+        "code": "K35.80",
+        "description": "Acute Appendicitis",
+        "case_rate": 24000
+      },
+      {
+        "code": "A09",
+        "description": "Acute Gastroenteritis",
+        "case_rate": 6000
+      },
+      {
+        "code": "J45.90",
+        "description": "Bronchial Asthma",
+        "case_rate": 9000
+      }
+    ],
+    "diet_templates": [
+      {
+        "type": "Standard",
+        "description": "General well-balanced diet",
+        "carbs_pct": 55,
+        "protein_pct": 15,
+        "fat_pct": 30
+      },
+      {
+        "type": "Diabetic",
+        "description": "Low glycemic, controlled carb",
+        "carbs_pct": 50,
+        "protein_pct": 20,
+        "fat_pct": 30
+      },
+      {
+        "type": "Renal",
+        "description": "Low protein, controlled potassium",
+        "carbs_pct": 60,
+        "protein_pct": 10,
+        "fat_pct": 30
+      },
+      {
+        "type": "Cardiac",
+        "description": "Low sodium, low fat",
+        "carbs_pct": 55,
+        "protein_pct": 20,
+        "fat_pct": 25
+      },
+      {
+        "type": "Low Sodium",
+        "description": "Sodium restricted",
+        "carbs_pct": 55,
+        "protein_pct": 15,
+        "fat_pct": 30
+      },
+      {
+        "type": "High Fiber",
+        "description": "High fiber for GI health",
+        "carbs_pct": 55,
+        "protein_pct": 15,
+        "fat_pct": 30
+      }
+    ],
+    "drug_nutrient_conflicts": [
+      {
+        "drug": "Warfarin",
+        "conflict_diet": "Standard",
+        "reason": "Standard diet contains high Vitamin K foods (spinach, broccoli) that antagonize Warfarin anticoagulation properties.",
+        "recommendation": "Switch to Cardiac/Standard-Restricted Vit-K template and restrict leafy greens."
+      },
+      {
+        "drug": "Spironolactone",
+        "conflict_diet": "Standard",
+        "reason": "Standard diet may feature high-potassium foods (bananas, potatoes) raising risks of severe hyperkalemia.",
+        "recommendation": "Strict dietary potassium restriction (switch to Low Sodium or Renal template)."
+      },
+      {
+        "drug": "Metformin",
+        "conflict_diet": "Standard",
+        "reason": "Standard general hospital diet contains simple sugars, raising glycemic indices and contradicting diabetes controls.",
+        "recommendation": "Enforce Diabetic diet override."
+      },
+      {
+        "drug": "Insulin",
+        "conflict_diet": "Standard",
+        "reason": "Uncontrolled carbohydrates in general diet cause critical glycemic spikes and unpredictability with sub-Q insulin dosing.",
+        "recommendation": "Lock therapeutic Diabetic diet protocol."
+      }
+    ]
+  },
+  "activity_log": [
+    {
+      "id": 1783308524173,
+      "timestamp": "2026-07-06T03:28:44.173Z",
+      "type": "auth",
+      "message": "Staff logged in: admin (admin)",
+      "patient_id": null,
+      "severity": "info"
+    },
+    {
+      "id": 1783308519587,
+      "timestamp": "2026-07-06T03:28:39.587Z",
+      "type": "auth",
+      "message": "Failed staff login attempt: anthonycordial2124@gmail.com (admin)",
+      "patient_id": null,
+      "severity": "warning"
+    },
+    {
+      "id": 1783257514398,
+      "timestamp": "2026-07-05T13:18:34.398Z",
+      "type": "auth",
+      "message": "Staff logged in: admin (admin)",
+      "patient_id": null,
+      "severity": "info"
+    },
+    {
+      "id": 1783256533025,
+      "timestamp": "2026-07-05T13:02:13.025Z",
+      "type": "triage",
+      "message": "Patient Anthony Cordial DENIED from queue. Reason was: General Consultation",
+      "patient_id": 16,
+      "severity": "warning"
+    },
+    {
+      "id": 1783256530317,
+      "timestamp": "2026-07-05T13:02:10.317Z",
+      "type": "triage",
+      "message": "Patient Anthony Cordial DENIED from queue. Reason was: General Consultation",
+      "patient_id": 17,
+      "severity": "warning"
+    },
+    {
+      "id": 1783256528154,
+      "timestamp": "2026-07-05T13:02:08.154Z",
+      "type": "triage",
+      "message": "Patient Anthony Cordial DENIED from queue. Reason was: General Consultation",
+      "patient_id": 18,
+      "severity": "warning"
+    },
+    {
+      "id": 1783256526073,
+      "timestamp": "2026-07-05T13:02:06.073Z",
+      "type": "triage",
+      "message": "Patient Anthony Cordial DENIED from queue. Reason was: General Consultation",
+      "patient_id": 19,
+      "severity": "warning"
+    },
+    {
+      "id": 1783256523908,
+      "timestamp": "2026-07-05T13:02:03.908Z",
+      "type": "triage",
+      "message": "Patient Anthony Cordial DENIED from queue. Reason was: General Consultation",
+      "patient_id": 21,
+      "severity": "warning"
+    },
+    {
+      "id": 1783256521820,
+      "timestamp": "2026-07-05T13:02:01.820Z",
+      "type": "triage",
+      "message": "Patient Anthony Cordial DENIED from queue. Reason was: General Consultation",
+      "patient_id": 20,
+      "severity": "warning"
+    },
+    {
+      "id": 1783256519862,
+      "timestamp": "2026-07-05T13:01:59.862Z",
+      "type": "triage",
+      "message": "Patient Anthony Cordial DENIED from queue. Reason was: General Consultation",
+      "patient_id": 22,
+      "severity": "warning"
+    },
+    {
+      "id": 1783256517306,
+      "timestamp": "2026-07-05T13:01:57.306Z",
+      "type": "triage",
+      "message": "Patient Anthony Cordial DENIED from queue. Reason was: General Consultation",
+      "patient_id": 23,
+      "severity": "warning"
+    },
+    {
+      "id": 1783256484614,
+      "timestamp": "2026-07-05T13:01:24.614Z",
+      "type": "ward",
+      "message": "Patient Jose Aquino discharged from Bed W1-B02 — removed from all queues.",
+      "patient_id": 5,
+      "severity": "info"
+    },
+    {
+      "id": 1783256459014,
+      "timestamp": "2026-07-05T13:00:59.014Z",
+      "type": "auth",
+      "message": "Staff logged in: admin (admin)",
+      "patient_id": null,
+      "severity": "info"
+    },
+    {
+      "id": 1783255956602,
+      "timestamp": "2026-07-05T12:52:36.602Z",
+      "type": "ward",
+      "message": "Patient Juan Dela Cruz checked out from Bed W1-B01",
+      "patient_id": 1,
+      "severity": "info"
+    },
+    {
+      "id": 1783255897558,
+      "timestamp": "2026-07-05T12:51:37.558Z",
+      "type": "ward",
+      "message": "Medication Warfarin prescribed to Juan Dela Cruz.",
+      "patient_id": 1,
+      "severity": "info"
+    },
+    {
+      "id": 1783255871206,
+      "timestamp": "2026-07-05T12:51:11.206Z",
+      "type": "auth",
+      "message": "Staff logged in: admin (admin)",
+      "patient_id": null,
+      "severity": "info"
+    },
+    {
+      "id": 1783255612510,
+      "timestamp": "2026-07-05T12:46:52.510Z",
+      "type": "diet",
+      "message": "MNT values recalculated for Juan Dela Cruz: TER 1925 kcal.",
+      "patient_id": 1,
+      "severity": "info"
+    },
+    {
+      "id": 1783255485454,
+      "timestamp": "2026-07-05T12:44:45.454Z",
+      "type": "diet",
+      "message": "DIET OVERRIDE TRIGGERED: Switched Juan Dela Cruz to Renal diet.",
+      "patient_id": 1,
+      "severity": "warning"
+    },
+    {
+      "id": 1783255485452,
+      "timestamp": "2026-07-05T12:44:45.452Z",
+      "type": "lab",
+      "message": "Lab results uploaded for Juan Dela Cruz. CRITICAL values found!",
+      "patient_id": 1,
+      "severity": "critical"
+    },
+    {
+      "id": 1783255410803,
+      "timestamp": "2026-07-05T12:43:30.803Z",
+      "type": "triage",
+      "message": "Patient Juan Dela Cruz removed from queue.",
+      "patient_id": 1,
+      "severity": "warning"
+    },
+    {
+      "id": 1783255115597,
+      "timestamp": "2026-07-05T12:38:35.597Z",
+      "type": "auth",
+      "message": "Staff logged in: admin (admin)",
+      "patient_id": null,
+      "severity": "info"
+    },
+    {
+      "id": 1783228215566,
+      "timestamp": "2026-07-05T05:10:15.566Z",
+      "type": "auth",
+      "message": "Staff logged in: admin (admin)",
+      "patient_id": null,
+      "severity": "info"
+    },
+    {
+      "id": 1783225601382,
+      "timestamp": "2026-07-05T04:26:41.382Z",
+      "type": "auth",
+      "message": "Staff logged in: admin (admin)",
+      "patient_id": null,
+      "severity": "info"
+    },
+    {
+      "id": 1783225592843,
+      "timestamp": "2026-07-05T04:26:32.843Z",
+      "type": "auth",
+      "message": "Failed staff login attempt: admin (admin)",
+      "patient_id": null,
+      "severity": "warning"
+    },
+    {
+      "id": 1783224034701,
+      "timestamp": "2026-07-05T04:00:34.701Z",
+      "type": "auth",
+      "message": "Staff logged in: admin (admin)",
+      "patient_id": null,
+      "severity": "info"
+    },
+    {
+      "id": 1783223699160,
+      "timestamp": "2026-07-05T03:54:59.160Z",
+      "type": "auth",
+      "message": "Failed staff login attempt: adminadmin (admin)",
+      "patient_id": null,
+      "severity": "warning"
+    },
+    {
+      "id": 1783223691674,
+      "timestamp": "2026-07-05T03:54:51.674Z",
+      "type": "auth",
+      "message": "Staff logged in: admin (admin)",
+      "patient_id": null,
+      "severity": "info"
+    },
+    {
+      "id": 1783223505566,
+      "timestamp": "2026-07-05T03:51:45.566Z",
+      "type": "auth",
+      "message": "Staff logged in: admin (admin)",
+      "patient_id": null,
+      "severity": "info"
+    },
+    {
+      "id": 1783223482422,
+      "timestamp": "2026-07-05T03:51:22.422Z",
+      "type": "auth",
+      "message": "Staff logged in: admin (admin)",
+      "patient_id": null,
+      "severity": "info"
+    },
+    {
+      "id": 1783222967687,
+      "timestamp": "2026-07-05T03:42:47.687Z",
+      "type": "auth",
+      "message": "Staff logged in: admin (admin)",
+      "patient_id": null,
+      "severity": "info"
+    },
+    {
+      "id": 1783222961729,
+      "timestamp": "2026-07-05T03:42:41.729Z",
+      "type": "auth",
+      "message": "Staff logged in: admin (admin)",
+      "patient_id": null,
+      "severity": "info"
+    },
+    {
+      "id": 1783144432412,
+      "timestamp": "2026-07-04T05:53:52.412Z",
+      "type": "auth",
+      "message": "Staff logged in: admin (admin)",
+      "patient_id": null,
+      "severity": "info"
+    },
+    {
+      "id": 1783140731100,
+      "timestamp": "2026-07-04T04:52:11.100Z",
+      "type": "auth",
+      "message": "Staff logged in: admin (admin)",
+      "patient_id": null,
+      "severity": "info"
+    },
+    {
+      "id": 1783043457882,
+      "timestamp": "2026-07-03T01:50:57.882Z",
+      "type": "auth",
+      "message": "Staff logged in: admin (admin)",
+      "patient_id": null,
+      "severity": "info"
+    },
+    {
+      "id": 1783042323842,
+      "timestamp": "2026-07-03T01:32:03.842Z",
+      "type": "triage",
+      "message": "New patient registered: Anthony Cordial (OPD-MED-023) — General Consultation",
+      "patient_id": 23,
+      "severity": "info"
+    },
+    {
+      "id": 1783042081562,
+      "timestamp": "2026-07-03T01:28:01.562Z",
+      "type": "triage",
+      "message": "New patient registered: Anthony Cordial (OPD-MED-022) — General Consultation",
+      "patient_id": 22,
+      "severity": "info"
+    },
+    {
+      "id": 1783041990206,
+      "timestamp": "2026-07-03T01:26:30.206Z",
+      "type": "triage",
+      "message": "New patient registered: Anthony Cordial (OPD-MED-021) — General Consultation",
+      "patient_id": 21,
+      "severity": "info"
+    },
+    {
+      "id": 1783041615599,
+      "timestamp": "2026-07-03T01:20:15.599Z",
+      "type": "triage",
+      "message": "New patient registered: Anthony Cordial (OPD-MED-020) — General Consultation",
+      "patient_id": 20,
+      "severity": "info"
+    },
+    {
+      "id": 1783041127415,
+      "timestamp": "2026-07-03T01:12:07.415Z",
+      "type": "triage",
+      "message": "New patient registered: Anthony Cordial (OPD-MED-019) — General Consultation",
+      "patient_id": 19,
+      "severity": "info"
+    },
+    {
+      "id": 1783040740031,
+      "timestamp": "2026-07-03T01:05:40.031Z",
+      "type": "triage",
+      "message": "New patient registered: Anthony Cordial (OPD-MED-018) — General Consultation",
+      "patient_id": 18,
+      "severity": "info"
+    },
+    {
+      "id": 1783040287410,
+      "timestamp": "2026-07-03T00:58:07.410Z",
+      "type": "triage",
+      "message": "New patient registered: Anthony Cordial (OPD-MED-017) — General Consultation",
+      "patient_id": 17,
+      "severity": "info"
+    },
+    {
+      "id": 1783039862679,
+      "timestamp": "2026-07-03T00:51:02.679Z",
+      "type": "triage",
+      "message": "New patient registered: Anthony Cordial (OPD-MED-016) — General Consultation",
+      "patient_id": 16,
+      "severity": "info"
+    },
+    {
+      "id": 1782825271323,
+      "timestamp": "2026-06-30T13:14:31.323Z",
+      "type": "triage",
+      "message": "New patient registered: Anthony Cordial (OPD-MED-015) — General Consultation",
+      "patient_id": 15,
+      "severity": "info"
+    },
+    {
+      "id": 1782824750905,
+      "timestamp": "2026-06-30T13:05:50.905Z",
+      "type": "auth",
+      "message": "Staff logged in: admin (admin)",
+      "patient_id": null,
+      "severity": "info"
+    },
+    {
+      "id": 1782824750888,
+      "timestamp": "2026-06-30T13:05:50.888Z",
+      "type": "auth",
+      "message": "Staff logged in: admin (admin)",
+      "patient_id": null,
+      "severity": "info"
+    },
+    {
+      "id": 1782823841743,
+      "timestamp": "2026-06-30T12:50:41.743Z",
+      "type": "billing",
+      "message": "Added ledger charge: asd asd ased (₱10000) to Juan's bill.",
+      "patient_id": 1,
+      "severity": "info"
+    },
+    {
+      "id": 1782823806506,
+      "timestamp": "2026-06-30T12:50:06.506Z",
+      "type": "auth",
+      "message": "Staff logged in: admin (admin)",
+      "patient_id": null,
+      "severity": "info"
+    },
+    {
+      "id": 1782798672566,
+      "timestamp": "2026-06-30T05:51:12.566Z",
+      "type": "triage",
+      "message": "Patient test 123 advanced from waiting to in_consultation.",
+      "patient_id": 14,
+      "severity": "info"
+    },
+    {
+      "id": 1782798530164,
+      "timestamp": "2026-06-30T05:48:50.164Z",
+      "type": "auth",
+      "message": "Staff logged in: admin (admin)",
+      "patient_id": null,
+      "severity": "info"
+    },
+    {
+      "id": 1782798260505,
+      "timestamp": "2026-06-30T05:44:20.505Z",
+      "type": "auth",
+      "message": "Staff logged in: nutritionist (nutritionist)",
+      "patient_id": null,
+      "severity": "info"
+    }
+  ],
+  "wards": [
+    {
+      "id": 1,
+      "name": "Medical Ward",
+      "beds": 10
+    },
+    {
+      "id": 2,
+      "name": "Surgical Ward",
+      "beds": 10
+    },
+    {
+      "id": 3,
+      "name": "Pediatric Ward",
+      "beds": 10
+    },
+    {
+      "id": 4,
+      "name": "OB-GYN Ward",
+      "beds": 10
+    }
+  ],
+  "patient_accounts": [
+    {
+      "id": 1782087841068,
+      "email": "test123@example.com",
+      "password": "test123",
+      "first_name": "test",
+      "last_name": "123",
+      "created_at": "2026-06-22T00:24:01.068Z"
+    },
+    {
+      "id": 1782654068040,
+      "email": "anthonycordial2124@gmail.com",
+      "password": "$2b$10$dn90J16VWiIPXsLVHi4a0Oi9Dpsrnp6ocUWgv3bLzwbmKnhyPSA7u",
+      "first_name": "Anthony",
+      "last_name": "Cordial",
+      "created_at": "2026-06-28T13:41:08.040Z"
+    }
+  ],
+  "pending_verifications": {}
+}

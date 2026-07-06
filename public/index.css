@@ -1,0 +1,409 @@
+/* D.I.E.T.S. Ecosystem - Premium UI Styling */
+
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&display=swap');
+
+:root {
+  --bg-primary: #030712;
+  --bg-secondary: #0b0f19;
+  --card-bg: rgba(15, 23, 42, 0.45);
+  --card-border: rgba(255, 255, 255, 0.08);
+  --card-border-hover: rgba(255, 255, 255, 0.16);
+  
+  --accent-teal: #0d9488;
+  --accent-teal-glow: rgba(13, 148, 136, 0.35);
+  --accent-indigo: #4f46e5;
+  --accent-indigo-glow: rgba(79, 70, 229, 0.35);
+  --accent-emerald: #059669;
+  --accent-emerald-glow: rgba(5, 150, 105, 0.35);
+  --accent-rose: #e11d48;
+  --accent-rose-glow: rgba(225, 29, 72, 0.35);
+  --accent-amber: #d97706;
+  --accent-amber-glow: rgba(217, 119, 6, 0.35);
+  --accent-purple: #7c3aed;
+  --accent-purple-glow: rgba(124, 58, 237, 0.35);
+  
+  --text-primary: #f9fafb;
+  --text-secondary: #9ca3af;
+  --text-muted: #6b7280;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.font-outfit {
+  font-family: 'Outfit', sans-serif;
+}
+
+.font-mono-fira {
+  font-family: 'Fira Code', monospace;
+}
+
+/* Glassmorphism Styles */
+.glass-card {
+  background: var(--card-bg);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid var(--card-border);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card:hover {
+  border-color: var(--card-border-hover);
+  box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.5);
+}
+
+/* Accent Card Hover Glows */
+.glass-card-teal:hover {
+  border-color: rgba(13, 148, 136, 0.4);
+  box-shadow: 0 0 25px -5px rgba(13, 148, 136, 0.25), 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+.glass-card-indigo:hover {
+  border-color: rgba(79, 70, 229, 0.4);
+  box-shadow: 0 0 25px -5px rgba(79, 70, 229, 0.25), 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+.glass-card-emerald:hover {
+  border-color: rgba(5, 150, 105, 0.4);
+  box-shadow: 0 0 25px -5px rgba(5, 150, 105, 0.25), 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+.glass-card-rose:hover {
+  border-color: rgba(225, 29, 72, 0.4);
+  box-shadow: 0 0 25px -5px rgba(225, 29, 72, 0.25), 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+.glass-card-amber:hover {
+  border-color: rgba(217, 119, 6, 0.4);
+  box-shadow: 0 0 25px -5px rgba(217, 119, 6, 0.25), 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+.glass-card-purple:hover {
+  border-color: rgba(124, 58, 237, 0.4);
+  box-shadow: 0 0 25px -5px rgba(124, 58, 237, 0.25), 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+/* Glass Inputs */
+.glass-input {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #fff;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(8px);
+}
+
+.glass-input:focus {
+  border-color: var(--accent-teal);
+  box-shadow: 0 0 15px 0 rgba(13, 148, 136, 0.25);
+  background: rgba(15, 23, 42, 0.85);
+  outline: none;
+}
+
+.glass-input-indigo:focus {
+  border-color: var(--accent-indigo);
+  box-shadow: 0 0 15px 0 rgba(79, 70, 229, 0.25);
+}
+
+/* Custom Scrollbars */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.01);
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 9999px;
+  transition: background 0.3s;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Interactive Sidebar Items */
+.sidebar-link {
+  position: relative;
+  transition: all 0.25s ease;
+  overflow: hidden;
+}
+
+.sidebar-link::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 15%;
+  height: 70%;
+  width: 3px;
+  background: var(--accent-teal);
+  border-radius: 0 4px 4px 0;
+  transform: scaleY(0);
+  transition: transform 0.25s ease;
+}
+
+.sidebar-link.active::before {
+  transform: scaleY(1);
+}
+
+.sidebar-link:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.sidebar-link.active {
+  background: rgba(13, 148, 136, 0.08);
+  color: #14b8a6;
+  border-left-color: transparent !important; /* Managed by ::before */
+}
+
+/* Interactive Ward Bed Grid Styles */
+.bed-card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  background: rgba(15, 23, 42, 0.35);
+}
+
+.bed-card.occupied {
+  background: rgba(13, 148, 136, 0.05);
+  border-color: rgba(13, 148, 136, 0.15);
+}
+
+.bed-card.occupied:hover {
+  background: rgba(13, 148, 136, 0.1);
+  border-color: rgba(13, 148, 136, 0.35);
+  box-shadow: 0 0 20px rgba(13, 148, 136, 0.15);
+}
+
+.bed-card.vacant {
+  background: rgba(15, 23, 42, 0.25);
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+.bed-card.vacant:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.bed-card.conflict {
+  background: rgba(225, 29, 72, 0.05);
+  border-color: rgba(225, 29, 72, 0.2);
+  animation: pulse-danger 3s infinite ease-in-out;
+}
+
+.bed-card.conflict:hover {
+  background: rgba(225, 29, 72, 0.08);
+  border-color: rgba(225, 29, 72, 0.4);
+  box-shadow: 0 0 20px rgba(225, 29, 72, 0.2);
+}
+
+/* Status Indicator Dots */
+.status-dot-active {
+  background-color: var(--accent-teal);
+  box-shadow: 0 0 8px var(--accent-teal);
+}
+
+.status-dot-warning {
+  background-color: var(--accent-amber);
+  box-shadow: 0 0 8px var(--accent-amber);
+}
+
+.status-dot-critical {
+  background-color: var(--accent-rose);
+  box-shadow: 0 0 8px var(--accent-rose);
+  animation: blink 1s infinite alternate;
+}
+
+/* Interactive Pipeline Step Lines */
+.pipeline-step {
+  transition: all 0.3s ease;
+}
+
+.pipeline-step:hover {
+  transform: translateY(-4px);
+  background: rgba(15, 23, 42, 0.6) !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+/* Custom badges */
+.badge-therapeutic {
+  background: rgba(225, 29, 72, 0.12);
+  border: 1px solid rgba(225, 29, 72, 0.25);
+  color: #fb7185;
+}
+
+.badge-info {
+  background: rgba(13, 148, 136, 0.12);
+  border: 1px solid rgba(13, 148, 136, 0.25);
+  color: #2dd4bf;
+}
+
+/* Keyframe Animations */
+@keyframes pulse-danger {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(225, 29, 72, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 20px 2px rgba(225, 29, 72, 0.35);
+  }
+}
+
+@keyframes blink {
+  0% { opacity: 0.4; }
+  100% { opacity: 1; }
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.spin-slow {
+  animation: spin-slow 20s linear infinite;
+}
+
+/* Ambient dynamic orbs */
+.ambient-orb {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(80px);
+  opacity: 0.15;
+  pointer-events: none;
+  mix-blend-mode: plus-lighter;
+  transition: all 5s ease-in-out;
+}
+
+/* Table Style Polish */
+.premium-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.premium-table th {
+  border-bottom: 2px solid rgba(255, 255, 255, 0.05);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.65rem;
+  color: var(--text-secondary);
+}
+
+.premium-table td {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  transition: background-color 0.2s ease;
+}
+
+.premium-table tr:hover td {
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+/* Fancy Buttons */
+.btn-gradient {
+  background: linear-gradient(135deg, var(--accent-teal), #059669);
+  color: #030712;
+  font-weight: 700;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 14px 0 rgba(13, 148, 136, 0.2);
+}
+
+.btn-gradient:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px 0 rgba(13, 148, 136, 0.35);
+  background: linear-gradient(135deg, #14b8a6, #10b981);
+}
+
+.btn-gradient:active {
+  transform: translateY(1px);
+}
+
+.btn-gradient-indigo {
+  background: linear-gradient(135deg, var(--accent-indigo), var(--accent-purple));
+  color: #ffffff;
+  font-weight: 700;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 14px 0 rgba(79, 70, 229, 0.2);
+}
+
+.btn-gradient-indigo:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px 0 rgba(79, 70, 229, 0.35);
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+}
+
+/* Triage Barcode display style */
+.barcode-box {
+  background-color: #ffffff;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  display: inline-block;
+}
+
+/* Interactive slider track customization */
+input[type="range"]::-webkit-slider-thumb {
+  background: var(--accent-teal);
+  box-shadow: 0 0 10px var(--accent-teal);
+}
+
+/* Print styles - isolate appointment slip */
+@media print {
+  @page {
+    margin: 0;
+  }
+  body * {
+    visibility: hidden !important;
+  }
+  #print-slip-area, #print-slip-area *, #print-tray-area, #print-tray-area * {
+    visibility: visible !important;
+  }
+  
+  /* Forcefully remove ANY properties on parent elements that create a CSS containing block */
+  [x-show="showPrintSlip"],
+  [x-show="showPrintSlip"] *,
+  [x-show="showTrayPrintSlip"],
+  [x-show="showTrayPrintSlip"] * {
+    transform: none !important;
+    filter: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    animation: none !important;
+    transition: none !important;
+  }
+
+  /* Now we can safely fix the form to the printed page itself */
+  #print-slip-area, #print-tray-area {
+    position: fixed !important;
+    left: 0 !important;
+    right: 0 !important;
+    top: 20px !important;
+    margin: 0 auto !important;
+    width: 90% !important;
+    max-width: 800px !important;
+    background: white !important;
+    color: black !important;
+    padding: 40px !important;
+    border: 2px solid black !important;
+    border-radius: 8px !important;
+    box-sizing: border-box !important;
+  }
+  
+  #print-slip-area .print-dark-text, #print-tray-area .print-dark-text {
+    color: #000 !important;
+  }
+  #print-slip-area .print-gray-text, #print-tray-area .print-gray-text {
+    color: #555 !important;
+  }
+  #print-slip-area .print-border, #print-tray-area .print-border {
+    border-color: #ccc !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+}
+

@@ -5,7 +5,8 @@ const { readDB, writeDB } = require('../data/database');
 const { addActivity } = require('../services/activityService');
 require('dotenv').config();
 
-const JWT_SECRET = process.env.JWT_SECRET || 'fallback_secret_key_for_dev';
+// Use the same validated secret from authMiddleware
+const { JWT_SECRET } = require('../utils/authMiddleware');
 
 // Email transporter configuration
 const emailTransporter = nodemailer.createTransport({
@@ -16,14 +17,50 @@ const emailTransporter = nodemailer.createTransport({
   }
 });
 
+// ── Helpers ──────────────────────────────────────────────────────────────
+
+/**
+ * Basic input sanitizer — strips HTML tags and trims whitespace.
+ * Prevents stored XSS in names, emails, etc.
+ */
+function sanitize(str) {
+  if (typeof str !== 'string') return '';
+  return str.replace(/<[^>]*>/g, '').trim();
+}
+
+/**
+ * Validates email format (basic RFC 5322 subset).
+ */
+function isValidEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+// ── Patient Registration ─────────────────────────────────────────────────
+
 exports.register = async (req, res) => {
   const db = readDB();
   db.patient_accounts = db.patient_accounts || [];
   db.pending_verifications = db.pending_verifications || {};
   
-  const { email, password, first_name, last_name } = req.body;
+  const email = sanitize(req.body.email);
+  const password = req.body.password; // Don't sanitize passwords — they get hashed
+  const first_name = sanitize(req.body.first_name);
+  const last_name = sanitize(req.body.last_name);
+
   if (!email || !password || !first_name || !last_name) {
     return res.status(400).json({ error: 'All fields are required.' });
+  }
+
+  if (!isValidEmail(email)) {
+    return res.status(400).json({ error: 'Invalid email format.' });
+  }
+
+  if (password.length < 8) {
+    return res.status(400).json({ error: 'Password must be at least 8 characters.' });
+  }
+
+  if (first_name.length > 50 || last_name.length > 50) {
+    return res.status(400).json({ error: 'Name fields must be 50 characters or less.' });
   }
 
   const existing = db.patient_accounts.find(u => u.email === email);
@@ -38,7 +75,7 @@ exports.register = async (req, res) => {
   const newAccount = {
     id: Date.now(),
     email,
-    password: hashedPassword, // Stored securely
+    password: hashedPassword,
     first_name,
     last_name,
     created_at: new Date().toISOString()
@@ -49,6 +86,7 @@ exports.register = async (req, res) => {
   db.pending_verifications[email] = {
     accountData: newAccount,
     otp,
+    attempts: 0,           // Track verification attempts
     expiresAt: Date.now() + 10 * 60 * 1000 // 10 minutes expiry
   };
   writeDB(db);
@@ -100,11 +138,13 @@ exports.register = async (req, res) => {
   }
 };
 
+// ── Resend OTP ────────────────────────────────────────────────────────────
+
 exports.resendOtp = async (req, res) => {
   const db = readDB();
   db.pending_verifications = db.pending_verifications || {};
 
-  const { email } = req.body;
+  const email = sanitize(req.body.email);
   if (!email) {
     return res.status(400).json({ error: 'Email is required.' });
   }
@@ -121,6 +161,7 @@ exports.resendOtp = async (req, res) => {
   }
 
   pending.resendCount += 1;
+  pending.attempts = 0;     // Reset attempt counter on resend
   pending.expiresAt = Date.now() + 10 * 60 * 1000; // Reset expiry
   writeDB(db);
 
@@ -166,12 +207,15 @@ exports.resendOtp = async (req, res) => {
   }
 };
 
+// ── Verify OTP (with brute-force protection) ──────────────────────────────
+
 exports.verifyOtp = (req, res) => {
   const db = readDB();
   db.patient_accounts = db.patient_accounts || [];
   db.pending_verifications = db.pending_verifications || {};
 
-  const { email, otp } = req.body;
+  const email = sanitize(req.body.email);
+  const otp = sanitize(req.body.otp);
   if (!email || !otp) {
     return res.status(400).json({ error: 'Email and OTP are required.' });
   }
@@ -187,8 +231,18 @@ exports.verifyOtp = (req, res) => {
     return res.status(400).json({ error: 'OTP has expired. Please register again.' });
   }
 
+  // Brute-force protection: max 5 verification attempts
+  pending.attempts = (pending.attempts || 0) + 1;
+  if (pending.attempts > 5) {
+    delete db.pending_verifications[email];
+    writeDB(db);
+    addActivity('auth', `OTP verification blocked for ${email} — too many failed attempts`, null, 'warning');
+    return res.status(429).json({ error: 'Too many failed attempts. Please register again.' });
+  }
+
   if (pending.otp.toString().trim() !== otp.toString().trim()) {
-    return res.status(400).json({ error: 'Invalid OTP code.' });
+    writeDB(db); // Persist incremented attempt counter
+    return res.status(400).json({ error: `Invalid OTP code. ${5 - pending.attempts} attempts remaining.` });
   }
 
   // OTP is valid, save to DB
@@ -200,31 +254,23 @@ exports.verifyOtp = (req, res) => {
   res.status(201).json({ message: 'Account verified and created successfully', user: { email, first_name: pending.accountData.first_name, last_name: pending.accountData.last_name } });
 };
 
+// ── Patient Login ─────────────────────────────────────────────────────────
+
 exports.login = async (req, res) => {
   const db = readDB();
   db.patient_accounts = db.patient_accounts || [];
   
-  const { email, password } = req.body;
+  const email = sanitize(req.body.email);
+  const password = req.body.password;
   const user = db.patient_accounts.find(u => u.email === email);
   
   if (!user) {
+    // Generic error message to prevent user enumeration
     return res.status(401).json({ error: 'Invalid email or password.' });
   }
 
-  // Compare passwords
-  let validPassword = false;
-  if(user.password.startsWith('$2b$')) {
-    validPassword = await bcrypt.compare(password, user.password);
-  } else {
-    // Fallback for old plaintext passwords in demo DB
-    validPassword = (password === user.password);
-    if(validPassword) {
-      // Opportunistically hash it
-      const salt = await bcrypt.genSalt(10);
-      user.password = await bcrypt.hash(password, salt);
-      writeDB(db);
-    }
-  }
+  // Only accept bcrypt-hashed passwords — no plaintext fallback
+  const validPassword = await bcrypt.compare(password, user.password);
 
   if (!validPassword) {
     return res.status(401).json({ error: 'Invalid email or password.' });
@@ -244,22 +290,26 @@ exports.login = async (req, res) => {
   });
 };
 
+// ── Staff Login (database-backed) ─────────────────────────────────────────
+
 exports.staffLogin = async (req, res) => {
   const { username, password, role } = req.body;
-  
-  // Hardcoded staff credentials for demonstration.
-  // In a real application, these would be in the database and hashed.
-  const credentials = {
-    admin: { username: 'admin', password: 'admin123', role: 'admin' },
-    nutritionist: { username: 'nutritionist', password: 'nutri123', role: 'nutritionist' },
-    nurse: { username: 'nurse', password: 'nurse123', role: 'nurse' },
-    billing: { username: 'billing', password: 'bill123', role: 'billing' },
-    frontdesk: { username: 'frontdesk', password: 'desk123', role: 'frontdesk' }
-  };
+  const db = readDB();
+  db.staff_accounts = db.staff_accounts || [];
 
-  const cred = credentials[role];
-  if (!cred || username !== cred.username || password !== cred.password) {
+  // Find by username AND role in the database
+  const staffUser = db.staff_accounts.find(
+    s => s.username === username && s.role === role
+  );
+
+  if (!staffUser) {
     addActivity('auth', `Failed staff login attempt: ${username} (${role})`, null, 'warning');
+    return res.status(401).json({ error: 'Invalid staff credentials.' });
+  }
+
+  const validPassword = await bcrypt.compare(password, staffUser.password);
+  if (!validPassword) {
+    addActivity('auth', `Failed staff login attempt: ${username} (${role}) — wrong password`, null, 'warning');
     return res.status(401).json({ error: 'Invalid staff credentials.' });
   }
 
@@ -277,18 +327,15 @@ exports.staffLogin = async (req, res) => {
   });
 };
 
+// ── Password Reset ────────────────────────────────────────────────────────
+
 exports.reset = (req, res) => {
   const db = readDB();
   db.patient_accounts = db.patient_accounts || [];
   
-  const { email } = req.body;
-  const user = db.patient_accounts.find(u => u.email === email);
-  
-  if (!user) {
-    return res.status(404).json({ error: 'Email not found.' });
-  }
+  const email = sanitize(req.body.email);
 
-  // Mock reset success
-  addActivity('auth', `Password reset requested for patient: ${email}`, null, 'warning');
-  res.json({ message: 'A password reset link has been sent to your email.' });
+  // Generic response regardless of whether the email exists (prevents enumeration)
+  addActivity('auth', `Password reset requested for: ${email}`, null, 'warning');
+  res.json({ message: 'If that email is registered, a password reset link has been sent.' });
 };

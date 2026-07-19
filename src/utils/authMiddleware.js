@@ -1,6 +1,11 @@
 const jwt = require('jsonwebtoken');
 
-const JWT_SECRET = process.env.JWT_SECRET || 'fallback_secret_key_for_dev';
+// Fail fast if JWT_SECRET is not configured
+if (!process.env.JWT_SECRET) {
+  console.error('FATAL: JWT_SECRET environment variable is not set. Exiting.');
+  process.exit(1);
+}
+const JWT_SECRET = process.env.JWT_SECRET;
 
 const requireAuth = (req, res, next) => {
   const authHeader = req.headers.authorization;

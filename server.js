@@ -5,6 +5,10 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const nodemailer = require('nodemailer');
+const helmet = require('helmet');
+const cors = require('cors');
+const rateLimit = require('express-rate-limit');
+const jwt = require('jsonwebtoken');
 
 // Email transporter configuration
 const emailTransporter = nodemailer.createTransport({
@@ -19,8 +23,31 @@ const app = express();
 const server = http.createServer(app);
 const wss = new WebSocketServer({ server });
 
-app.use(express.json());
+// ========== Security Middleware ==========
+
+// Security headers (CSP, X-Frame-Options, HSTS, etc.)
+app.use(helmet({
+  contentSecurityPolicy: false // Allow inline scripts/styles for the SPA
+}));
+
+// CORS — restrict origins in production
+app.use(cors({
+  origin: process.env.CORS_ORIGIN || '*',
+  credentials: true
+}));
+
+// Request body size limit (prevents DoS via large payloads)
+app.use(express.json({ limit: '100kb' }));
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Rate limiting on authentication endpoints
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 20,                  // max 20 requests per window per IP
+  message: { error: 'Too many authentication attempts. Please try again later.' },
+  standardHeaders: true,
+  legacyHeaders: false
+});
 
 const { readDB, writeDB } = require('./src/data/database');
 const { setWss, broadcast } = require('./src/utils/websocket');
@@ -32,12 +59,12 @@ setWss(wss);
 
 // ========== REST API ==========
 
-// --- Authentication Routes ---
+// --- Authentication Routes (rate-limited) ---
 const authRoutes = require('./src/routes/authRoutes');
-app.use('/api/auth', authRoutes);
+app.use('/api/auth', authLimiter, authRoutes);
 
 // Secure all other API routes
-const { requireAuth } = require('./src/utils/authMiddleware');
+const { requireAuth, requireRole } = require('./src/utils/authMiddleware');
 app.use('/api', requireAuth);
 
 // Patient Portal — returns the logged-in patient's own medical records
@@ -88,8 +115,8 @@ app.get('/api/patient/my-records', (req, res) => {
   });
 });
 
-// Get dashboard stats
-app.get('/api/stats', (req, res) => {
+// Get dashboard stats (staff only)
+app.get('/api/stats', requireRole(['admin', 'nutritionist', 'nurse', 'billing', 'frontdesk']), (req, res) => {
   const db = readDB();
   const admittedCount = db.admissions.filter(a => a.status === 'active').length;
   const totalBeds = db.wards.reduce((sum, w) => sum + w.beds, 0);
@@ -109,14 +136,14 @@ app.get('/api/stats', (req, res) => {
   });
 });
 
-// Get patients
-app.get('/api/patients', (req, res) => {
+// Get patients (staff only)
+app.get('/api/patients', requireRole(['admin', 'nutritionist', 'nurse', 'billing', 'frontdesk']), (req, res) => {
   const db = readDB();
   res.json(db.patients);
 });
 
-// Get patient details (including labs, diet, medications, active admissions)
-app.get('/api/patients/:id', (req, res) => {
+// Get patient details (staff only)
+app.get('/api/patients/:id', requireRole(['admin', 'nutritionist', 'nurse', 'billing', 'frontdesk']), (req, res) => {
   const db = readDB();
   const patientId = parseInt(req.params.id);
   const patient = db.patients.find(p => p.patient_id === patientId);
@@ -138,8 +165,8 @@ app.get('/api/patients/:id', (req, res) => {
   });
 });
 
-// Get lobby triage queue
-app.get('/api/queue', (req, res) => {
+// Get lobby triage queue (staff only)
+app.get('/api/queue', requireRole(['admin', 'nurse', 'frontdesk']), (req, res) => {
   const db = readDB();
   const queue = db.patients
     .filter(p => p.queue_status && p.queue_status !== 'not_queued' && p.queue_status !== 'denied')
@@ -147,8 +174,8 @@ app.get('/api/queue', (req, res) => {
   res.json(queue);
 });
 
-// Register patient in triage queue
-app.post('/api/triage/register', (req, res) => {
+// Register patient in triage queue (staff + patients)
+app.post('/api/triage/register', requireRole(['admin', 'nurse', 'frontdesk', 'patient']), (req, res) => {
   const db = readDB();
   const { first_name, last_name, age, gender, contact, municipality, reason_for_visit, appointment_date } = req.body;
   if (!first_name || !last_name) return res.status(400).json({ error: 'First name and last name are required' });
@@ -195,8 +222,8 @@ app.post('/api/triage/register', (req, res) => {
   res.status(201).json({ ...newPatient, queue_position: queuePosition });
 });
 
-// Advance queue status (waiting -> in_consultation -> removed instantly)
-app.post('/api/triage/advance/:id', (req, res) => {
+// Advance queue status (staff only)
+app.post('/api/triage/advance/:id', requireRole(['admin', 'nurse', 'frontdesk']), (req, res) => {
   const db = readDB();
   const patientId = parseInt(req.params.id);
   const patient = db.patients.find(p => p.patient_id === patientId);
@@ -226,8 +253,8 @@ app.post('/api/triage/advance/:id', (req, res) => {
   res.json(patient);
 });
 
-// Remove patient from triage queue
-app.delete('/api/triage/remove/:id', (req, res) => {
+// Remove patient from triage queue (staff only)
+app.delete('/api/triage/remove/:id', requireRole(['admin', 'nurse', 'frontdesk']), (req, res) => {
   const db = readDB();
   const patientId = parseInt(req.params.id);
   const patient = db.patients.find(p => p.patient_id === patientId);
@@ -242,8 +269,8 @@ app.delete('/api/triage/remove/:id', (req, res) => {
   res.json({ message: 'Patient removed from queue' });
 });
 
-// Approve patient in triage queue
-app.post('/api/triage/approve/:id', (req, res) => {
+// Approve patient in triage queue (staff only)
+app.post('/api/triage/approve/:id', requireRole(['admin', 'nurse', 'frontdesk']), (req, res) => {
   const db = readDB();
   const patientId = parseInt(req.params.id);
   const patient = db.patients.find(p => p.patient_id === patientId);
@@ -262,8 +289,8 @@ app.post('/api/triage/approve/:id', (req, res) => {
   res.json(patient);
 });
 
-// Deny patient in triage queue
-app.post('/api/triage/deny/:id', (req, res) => {
+// Deny patient in triage queue (staff only)
+app.post('/api/triage/deny/:id', requireRole(['admin', 'nurse', 'frontdesk']), (req, res) => {
   const db = readDB();
   const patientId = parseInt(req.params.id);
   const patient = db.patients.find(p => p.patient_id === patientId);
@@ -283,16 +310,16 @@ app.post('/api/triage/deny/:id', (req, res) => {
 });
 
 
-// Get laboratory results
-app.get('/api/patients/:id/labs', (req, res) => {
+// Get laboratory results (staff only)
+app.get('/api/patients/:id/labs', requireRole(['admin', 'nutritionist', 'nurse']), (req, res) => {
   const db = readDB();
   const patientId = parseInt(req.params.id);
   const labs = db.lab_results.filter(l => l.patient_id === patientId);
   res.json(labs);
 });
 
-// Save lab results & trigger automated checks
-app.post('/api/patients/:id/labs', (req, res) => {
+// Save lab results & trigger automated checks (clinical staff only)
+app.post('/api/patients/:id/labs', requireRole(['admin', 'nurse']), (req, res) => {
   const db = readDB();
   const patientId = parseInt(req.params.id);
   const patient = db.patients.find(p => p.patient_id === patientId);
@@ -377,8 +404,8 @@ app.post('/api/patients/:id/labs', (req, res) => {
   });
 });
 
-// Calculate medical nutrition therapy (TER)
-app.post('/api/patients/:id/diet/calculate', (req, res) => {
+// Calculate medical nutrition therapy (TER) (nutritionist/admin)
+app.post('/api/patients/:id/diet/calculate', requireRole(['admin', 'nutritionist']), (req, res) => {
   const db = readDB();
   const patientId = parseInt(req.params.id);
   const patient = db.patients.find(p => p.patient_id === patientId);
@@ -440,8 +467,8 @@ app.post('/api/patients/:id/diet/calculate', (req, res) => {
   res.json(currentProfile);
 });
 
-// Update diet profile manually
-app.post('/api/patients/:id/diet', (req, res) => {
+// Update diet profile manually (nutritionist/admin)
+app.post('/api/patients/:id/diet', requireRole(['admin', 'nutritionist']), (req, res) => {
   const db = readDB();
   const patientId = parseInt(req.params.id);
   const { diet_type } = req.body;
@@ -488,8 +515,8 @@ app.post('/api/patients/:id/diet', (req, res) => {
   res.json(profile || db.diet_profiles.find(d => d.patient_id === patientId));
 });
 
-// Add medication
-app.post('/api/patients/:id/medications', (req, res) => {
+// Add medication (clinical staff only)
+app.post('/api/patients/:id/medications', requireRole(['admin', 'nurse']), (req, res) => {
   const db = readDB();
   const patientId = parseInt(req.params.id);
   const { drug_name, dosage, frequency, route } = req.body;
@@ -527,8 +554,8 @@ app.post('/api/patients/:id/medications', (req, res) => {
   res.status(201).json({ medication: newMed, warnings });
 });
 
-// Run drug-nutrient check
-app.get('/api/patients/:id/drug-check', (req, res) => {
+// Run drug-nutrient check (clinical staff)
+app.get('/api/patients/:id/drug-check', requireRole(['admin', 'nutritionist', 'nurse']), (req, res) => {
   const db = readDB();
   const patientId = parseInt(req.params.id);
   const medications = db.medications.filter(m => m.patient_id === patientId);
@@ -551,14 +578,14 @@ app.get('/api/patients/:id/drug-check', (req, res) => {
   res.json({ warnings });
 });
 
-// Get ward bed layouts
-app.get('/api/wards', (req, res) => {
+// Get ward bed layouts (staff only)
+app.get('/api/wards', requireRole(['admin', 'nurse', 'frontdesk', 'billing']), (req, res) => {
   const db = readDB();
   res.json(db.wards);
 });
 
-// Assign patient to bed
-app.post('/api/wards/assign', (req, res) => {
+// Assign patient to bed (admin/nurse only)
+app.post('/api/wards/assign', requireRole(['admin', 'nurse']), (req, res) => {
   const db = readDB();
   const { patient_id, ward, bed } = req.body;
   const pId = parseInt(patient_id);
@@ -634,8 +661,8 @@ app.post('/api/wards/assign', (req, res) => {
   res.status(201).json(admission);
 });
 
-// Discharge bed / checkout patient
-app.post('/api/wards/discharge/:patientId', (req, res) => {
+// Discharge bed / checkout patient (admin/nurse only)
+app.post('/api/wards/discharge/:patientId', requireRole(['admin', 'nurse']), (req, res) => {
   const db = readDB();
   const patientId = parseInt(req.params.patientId);
 
@@ -665,8 +692,8 @@ app.post('/api/wards/discharge/:patientId', (req, res) => {
   res.json({ message: 'Patient discharged successfully', admission });
 });
 
-// Get kitchen tray tickets
-app.get('/api/kitchen/tickets', (req, res) => {
+// Get kitchen tray tickets (nutrition/admin staff)
+app.get('/api/kitchen/tickets', requireRole(['admin', 'nutritionist', 'nurse']), (req, res) => {
   const db = readDB();
   const activeAdmissions = db.admissions.filter(a => a.status === 'active');
   
@@ -704,11 +731,11 @@ app.get('/api/kitchen/tickets', (req, res) => {
   res.json(tickets);
 });
 
-// Export Billing PDF
-app.get('/api/billing/:id/export-pdf', exportController.exportBillingPdf);
+// Export Billing PDF (billing/admin only)
+app.get('/api/billing/:id/export-pdf', requireRole(['admin', 'billing']), exportController.exportBillingPdf);
 
-// Get billing ledger
-app.get('/api/billing/:id', (req, res) => {
+// Get billing ledger (billing/admin only)
+app.get('/api/billing/:id', requireRole(['admin', 'billing']), (req, res) => {
   const db = readDB();
   const patientId = parseInt(req.params.id);
   const billing = db.billing_ledger.find(b => b.patient_id === patientId && b.status === 'active');
@@ -716,8 +743,8 @@ app.get('/api/billing/:id', (req, res) => {
   res.json(billing);
 });
 
-// Add ledger item
-app.post('/api/billing/:id/add-item', (req, res) => {
+// Add ledger item (billing/admin only)
+app.post('/api/billing/:id/add-item', requireRole(['admin', 'billing']), (req, res) => {
   const db = readDB();
   const patientId = parseInt(req.params.id);
   const { category, description, amount } = req.body;
@@ -760,8 +787,8 @@ app.post('/api/billing/:id/add-item', (req, res) => {
   res.json(billing);
 });
 
-// Apply PhilHealth Case Rate & Statutory Discounts
-app.post('/api/billing/:id/philhealth', (req, res) => {
+// Apply PhilHealth Case Rate & Statutory Discounts (billing/admin only)
+app.post('/api/billing/:id/philhealth', requireRole(['admin', 'billing']), (req, res) => {
   const db = readDB();
   const patientId = parseInt(req.params.id);
   const { icd10_code, is_senior_pwd } = req.body;
@@ -801,8 +828,8 @@ app.post('/api/billing/:id/philhealth', (req, res) => {
   });
 });
 
-// Fast-Track Discharge Settle
-app.post('/api/billing/:id/discharge', (req, res) => {
+// Fast-Track Discharge Settle (billing/admin only)
+app.post('/api/billing/:id/discharge', requireRole(['admin', 'billing']), (req, res) => {
   const db = readDB();
   const patientId = parseInt(req.params.id);
 
@@ -837,8 +864,8 @@ app.post('/api/billing/:id/discharge', (req, res) => {
 
 // ========== ANALYTICS API ==========
 
-// Get condition/symptom analytics by municipality
-app.get('/api/analytics/conditions', (req, res) => {
+// Get condition/symptom analytics by municipality (staff only)
+app.get('/api/analytics/conditions', requireRole(['admin', 'nutritionist', 'nurse']), (req, res) => {
   const db = readDB();
 
   // Define condition detection rules based on diagnosis text, diet, and lab data
@@ -1039,13 +1066,30 @@ app.get('/api/reference/drug-conflicts', (req, res) => {
   res.json(db.reference_data.drug_nutrient_conflicts);
 });
 
-// ========== WebSocket Events ==========
-wss.on('connection', (ws) => {
-  console.log('WS Client connected');
+// ========== WebSocket Events (with JWT authentication) ==========
+wss.on('connection', (ws, req) => {
+  // Authenticate WebSocket connections via token query parameter
+  try {
+    const url = new URL(req.url, `http://${req.headers.host}`);
+    const token = url.searchParams.get('token');
+    if (token) {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      ws.user = decoded;
+    }
+  } catch (err) {
+    // Allow unauthenticated connections but mark them — they get limited data
+    ws.user = null;
+  }
+
+  console.log(`WS Client connected (${ws.user ? ws.user.role || ws.user.email : 'anonymous'})`);
   
-  // Send current stats & log immediately
-  const db = readDB();
-  ws.send(JSON.stringify({ event: 'connected', data: { log: db.activity_log } }));
+  // Only send activity log to authenticated staff users
+  if (ws.user && ws.user.role && ws.user.role !== 'patient') {
+    const db = readDB();
+    ws.send(JSON.stringify({ event: 'connected', data: { log: db.activity_log } }));
+  } else {
+    ws.send(JSON.stringify({ event: 'connected', data: { log: [] } }));
+  }
 
   ws.on('close', () => console.log('WS Client disconnected'));
 });

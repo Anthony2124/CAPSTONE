@@ -557,10 +557,11 @@ document.addEventListener('alpine:init', () => {
       else this.mealPeriod = 'Dinner';
     },
 
-    // WS Connection
+    // WS Connection (with JWT authentication)
     connectWebSocket() {
       const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-      const wsUrl = `${protocol}//${window.location.host}`;
+      const token = localStorage.getItem('diets_token') || '';
+      const wsUrl = `${protocol}//${window.location.host}${token ? '?token=' + encodeURIComponent(token) : ''}`;
       this.ws = new WebSocket(wsUrl);
 
       this.ws.onmessage = (event) => {

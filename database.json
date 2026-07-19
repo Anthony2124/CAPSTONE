@@ -45,7 +45,7 @@
       "contact": "09203456789",
       "municipality": "San Luis",
       "queue_token": "OPD-MED-004",
-      "queue_status": "in_consultation",
+      "queue_status": "not_queued",
       "queue_timestamp": "2026-06-21T08:45:00.000Z"
     },
     {
@@ -129,7 +129,7 @@
       "contact": "09811999466",
       "municipality": "Baler",
       "queue_token": "OPD-MED-011",
-      "queue_status": "in_consultation",
+      "queue_status": "not_queued",
       "queue_timestamp": "2026-06-21T13:05:49.797Z"
     },
     {
@@ -922,6 +922,54 @@
   },
   "activity_log": [
     {
+      "id": 1784431321035,
+      "timestamp": "2026-07-19T03:22:01.035Z",
+      "type": "auth",
+      "message": "Staff logged in: admin (admin)",
+      "patient_id": null,
+      "severity": "info"
+    },
+    {
+      "id": 1784430853744,
+      "timestamp": "2026-07-19T03:14:13.744Z",
+      "type": "auth",
+      "message": "Staff logged in: admin (admin)",
+      "patient_id": null,
+      "severity": "info"
+    },
+    {
+      "id": 1784429519021,
+      "timestamp": "2026-07-19T02:51:59.021Z",
+      "type": "auth",
+      "message": "Staff logged in: admin (admin)",
+      "patient_id": null,
+      "severity": "info"
+    },
+    {
+      "id": 1784429241642,
+      "timestamp": "2026-07-19T02:47:21.642Z",
+      "type": "triage",
+      "message": "Patient Ana Cruz consultation finished — removed from queue.",
+      "patient_id": 4,
+      "severity": "info"
+    },
+    {
+      "id": 1784429231739,
+      "timestamp": "2026-07-19T02:47:11.739Z",
+      "type": "triage",
+      "message": "Patient Anthony Cordial consultation finished — removed from queue.",
+      "patient_id": 11,
+      "severity": "info"
+    },
+    {
+      "id": 1784429193101,
+      "timestamp": "2026-07-19T02:46:33.101Z",
+      "type": "auth",
+      "message": "Staff logged in: admin (admin)",
+      "patient_id": null,
+      "severity": "info"
+    },
+    {
       "id": 1783308524173,
       "timestamp": "2026-07-06T03:28:44.173Z",
       "type": "auth",
@@ -1272,54 +1320,6 @@
       "message": "Staff logged in: admin (admin)",
       "patient_id": null,
       "severity": "info"
-    },
-    {
-      "id": 1782824750888,
-      "timestamp": "2026-06-30T13:05:50.888Z",
-      "type": "auth",
-      "message": "Staff logged in: admin (admin)",
-      "patient_id": null,
-      "severity": "info"
-    },
-    {
-      "id": 1782823841743,
-      "timestamp": "2026-06-30T12:50:41.743Z",
-      "type": "billing",
-      "message": "Added ledger charge: asd asd ased (₱10000) to Juan's bill.",
-      "patient_id": 1,
-      "severity": "info"
-    },
-    {
-      "id": 1782823806506,
-      "timestamp": "2026-06-30T12:50:06.506Z",
-      "type": "auth",
-      "message": "Staff logged in: admin (admin)",
-      "patient_id": null,
-      "severity": "info"
-    },
-    {
-      "id": 1782798672566,
-      "timestamp": "2026-06-30T05:51:12.566Z",
-      "type": "triage",
-      "message": "Patient test 123 advanced from waiting to in_consultation.",
-      "patient_id": 14,
-      "severity": "info"
-    },
-    {
-      "id": 1782798530164,
-      "timestamp": "2026-06-30T05:48:50.164Z",
-      "type": "auth",
-      "message": "Staff logged in: admin (admin)",
-      "patient_id": null,
-      "severity": "info"
-    },
-    {
-      "id": 1782798260505,
-      "timestamp": "2026-06-30T05:44:20.505Z",
-      "type": "auth",
-      "message": "Staff logged in: nutritionist (nutritionist)",
-      "patient_id": null,
-      "severity": "info"
     }
   ],
   "wards": [
@@ -1348,7 +1348,7 @@
     {
       "id": 1782087841068,
       "email": "test123@example.com",
-      "password": "test123",
+      "password": "$2b$10$74BtHrooDJ7U0TCaNgJoo.rL9RYSWEos8O6IkcAuru76hZsPESolm",
       "first_name": "test",
       "last_name": "123",
       "created_at": "2026-06-22T00:24:01.068Z"
@@ -1362,5 +1362,42 @@
       "created_at": "2026-06-28T13:41:08.040Z"
     }
   ],
-  "pending_verifications": {}
+  "pending_verifications": {},
+  "staff_accounts": [
+    {
+      "id": 1784430513450,
+      "username": "admin",
+      "password": "$2b$10$i.2QoR7n//YOkjS8cKK1s.Iv6Qh3yXI0w3qmJeqdv706CxGB15dz2",
+      "role": "admin",
+      "created_at": "2026-07-19T03:08:32.690Z"
+    },
+    {
+      "id": 1784430513514,
+      "username": "nutritionist",
+      "password": "$2b$10$l.cI16UPUZq9dM86V.z1lO04kfSls5DihrMMrmsuPm27CuxqfiV82",
+      "role": "nutritionist",
+      "created_at": "2026-07-19T03:08:32.769Z"
+    },
+    {
+      "id": 1784430513722,
+      "username": "nurse",
+      "password": "$2b$10$ShCNbXsEMqvYPZ4Q71yGg.xvPwEGvq03tTkCs29tXjqYhOmqJ9UI.",
+      "role": "nurse",
+      "created_at": "2026-07-19T03:08:32.853Z"
+    },
+    {
+      "id": 1784430513846,
+      "username": "billing",
+      "password": "$2b$10$yrT4.htwgsaw9JvhMSSzVeMc/iOjXJqem.3CIZ./HHpNHVOKQ0MXK",
+      "role": "billing",
+      "created_at": "2026-07-19T03:08:32.933Z"
+    },
+    {
+      "id": 1784430513315,
+      "username": "frontdesk",
+      "password": "$2b$10$47tfT0Wmt39qlGIxqYm4d.6p91ujCzznaIi0cWqQ.G18mAKXD/YOi",
+      "role": "frontdesk",
+      "created_at": "2026-07-19T03:08:33.011Z"
+    }
+  ]
 }

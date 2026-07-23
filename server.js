@@ -67,6 +67,136 @@ app.use('/api/auth', authLimiter, authRoutes);
 const { requireAuth, requireRole } = require('./src/utils/authMiddleware');
 app.use('/api', requireAuth);
 
+// ========== DOCTOR SCHEDULE ENDPOINTS ==========
+
+// Get all doctors with their schedules (accessible to all authenticated users)
+app.get('/api/doctors', (req, res) => {
+  const db = readDB();
+  db.doctors = db.doctors || [];
+  res.json(db.doctors);
+});
+
+// Get available time slots for a doctor on a specific date
+// Query params: ?doctor_id=1&date=2026-07-23
+app.get('/api/doctors/available-slots', (req, res) => {
+  const db = readDB();
+  db.doctors = db.doctors || [];
+  db.doctor_appointments = db.doctor_appointments || [];
+
+  const doctorId = parseInt(req.query.doctor_id);
+  const dateStr = req.query.date; // YYYY-MM-DD
+
+  if (!doctorId || !dateStr) {
+    return res.status(400).json({ error: 'doctor_id and date are required.' });
+  }
+
+  const doctor = db.doctors.find(d => d.doctor_id === doctorId);
+  if (!doctor) return res.status(404).json({ error: 'Doctor not found.' });
+
+  // Determine the day of the week for the requested date using UTC to avoid timezone shifts
+  const dateParts = dateStr.split('-');
+  const dateObj = new Date(Date.UTC(dateParts[0], dateParts[1] - 1, dateParts[2]));
+  const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  const dayOfWeek = dayNames[dateObj.getUTCDay()];
+
+  if (!doctor.available_days.includes(dayOfWeek)) {
+    return res.json({ available: false, day: dayOfWeek, slots: [], message: `Dr. ${doctor.name.split(' ').pop()} is not available on ${dayOfWeek}s. Please pick a different date.` });
+  }
+
+  // Get already booked slots for this doctor on this date
+  const bookedSlots = db.doctor_appointments
+    .filter(a => a.doctor_id === doctorId && a.appointment_date === dateStr && a.status !== 'cancelled')
+    .map(a => a.time_slot);
+
+  const availableSlots = doctor.time_slots.filter(slot => !bookedSlots.includes(slot));
+
+  res.json({
+    available: true,
+    day: dayOfWeek,
+    doctor,
+    slots: availableSlots,
+    booked_slots: bookedSlots,
+    total_slots: doctor.time_slots.length,
+    available_count: availableSlots.length
+  });
+});
+
+// Book a doctor appointment (authenticated patients and staff)
+app.post('/api/doctors/book-appointment', requireRole(['admin', 'nurse', 'frontdesk', 'patient']), (req, res) => {
+  const db = readDB();
+  db.doctors = db.doctors || [];
+  db.doctor_appointments = db.doctor_appointments || [];
+
+  const { doctor_id, appointment_date, time_slot, patient_name, reason, contact } = req.body;
+
+  if (!doctor_id || !appointment_date || !time_slot || !patient_name) {
+    return res.status(400).json({ error: 'doctor_id, appointment_date, time_slot, and patient_name are required.' });
+  }
+
+  const doctor = db.doctors.find(d => d.doctor_id === parseInt(doctor_id));
+  if (!doctor) return res.status(404).json({ error: 'Doctor not found.' });
+
+  // Check that the slot is still available
+  const alreadyBooked = db.doctor_appointments.find(
+    a => a.doctor_id === parseInt(doctor_id) &&
+         a.appointment_date === appointment_date &&
+         a.time_slot === time_slot &&
+         a.status !== 'cancelled'
+  );
+
+  if (alreadyBooked) {
+    return res.status(409).json({ error: 'This time slot has already been booked. Please choose another.' });
+  }
+
+  const newAppointment = {
+    appointment_id: Date.now(),
+    doctor_id: parseInt(doctor_id),
+    doctor_name: doctor.name,
+    doctor_specialization: doctor.specialization,
+    appointment_date,
+    time_slot,
+    patient_name,
+    reason: reason || 'General Consultation',
+    contact: contact || '',
+    status: 'confirmed',
+    booked_by: req.user ? req.user.email || req.user.username : 'patient',
+    booked_at: new Date().toISOString()
+  };
+
+  db.doctor_appointments.push(newAppointment);
+  writeDB(db);
+
+  addActivity('triage', `Appointment booked: ${patient_name} with ${doctor.name} on ${appointment_date} at ${time_slot}`, null, 'info');
+  broadcast('appointment:booked', newAppointment);
+
+  res.status(201).json(newAppointment);
+});
+
+// Get all doctor appointments (admin/staff only)
+app.get('/api/doctors/appointments', requireRole(['admin', 'nurse', 'frontdesk']), (req, res) => {
+  const db = readDB();
+  db.doctor_appointments = db.doctor_appointments || [];
+  const sorted = [...db.doctor_appointments].sort((a, b) => new Date(a.appointment_date + 'T' + a.time_slot) - new Date(b.appointment_date + 'T' + b.time_slot));
+  res.json(sorted);
+});
+
+// Cancel a doctor appointment (admin/staff only)
+app.delete('/api/doctors/appointments/:id', requireRole(['admin', 'nurse', 'frontdesk']), (req, res) => {
+  const db = readDB();
+  db.doctor_appointments = db.doctor_appointments || [];
+  const apptId = parseInt(req.params.id);
+  const appt = db.doctor_appointments.find(a => a.appointment_id === apptId);
+  if (!appt) return res.status(404).json({ error: 'Appointment not found.' });
+
+  appt.status = 'cancelled';
+  writeDB(db);
+
+  addActivity('triage', `Appointment cancelled: ${appt.patient_name} with ${appt.doctor_name} on ${appt.appointment_date} at ${appt.time_slot}`, null, 'warning');
+  broadcast('appointment:cancelled', appt);
+
+  res.json({ message: 'Appointment cancelled successfully.' });
+});
+
 // Patient Portal — returns the logged-in patient's own medical records
 app.get('/api/patient/my-records', (req, res) => {
   const db = readDB();
@@ -155,15 +285,53 @@ app.get('/api/patients/:id', requireRole(['admin', 'nutritionist', 'nurse', 'bil
   const medications = db.medications.filter(m => m.patient_id === patientId);
   const billing = db.billing_ledger.find(b => b.patient_id === patientId && b.status === 'active');
 
+  db.patient_conditions = db.patient_conditions || [];
+  const explicit_conditions = db.patient_conditions.filter(c => c.patient_id === patientId);
+
   res.json({
     patient,
     admission: admission || null,
     labs,
     diet: diet || null,
     medications,
-    billing: billing || null
+    billing: billing || null,
+    explicit_conditions
   });
 });
+
+// Add explicit condition to a patient
+app.post('/api/patients/:id/conditions', requireRole(['admin', 'nutritionist', 'nurse']), (req, res) => {
+  const db = readDB();
+  const patientId = parseInt(req.params.id);
+  const patient = db.patients.find(p => p.patient_id === patientId);
+  if (!patient) return res.status(404).json({ error: 'Patient not found' });
+
+  const { condition_name, status } = req.body;
+  if (!condition_name || !status) return res.status(400).json({ error: 'Condition name and status are required' });
+
+  db.patient_conditions = db.patient_conditions || [];
+  
+  // Prevent duplicate conditions (unless they want multiple, but typically you update it)
+  const existingIndex = db.patient_conditions.findIndex(c => c.patient_id === patientId && c.condition_name === condition_name);
+  if (existingIndex > -1) {
+    db.patient_conditions[existingIndex].status = status;
+  } else {
+    db.patient_conditions.push({
+      id: Date.now().toString(),
+      patient_id: patientId,
+      condition_name,
+      status,
+      added_at: new Date().toISOString(),
+      added_by: req.user ? req.user.email : 'System'
+    });
+  }
+
+  writeDB(db);
+  addActivity('patient', `Condition flagged: ${condition_name} (${status}) for ${patient.first_name} ${patient.last_name}`, patientId, 'info');
+  
+  res.status(201).json({ message: 'Condition added successfully' });
+});
+
 
 // Get lobby triage queue (staff only)
 app.get('/api/queue', requireRole(['admin', 'nurse', 'frontdesk']), (req, res) => {
@@ -959,6 +1127,23 @@ app.get('/api/analytics/conditions', requireRole(['admin', 'nutritionist', 'nurs
     }
   ];
 
+  // Dynamic Custom Conditions
+  db.reference_data = db.reference_data || {};
+  db.reference_data.custom_conditions = db.reference_data.custom_conditions || [];
+  
+  db.reference_data.custom_conditions.forEach(cc => {
+    conditionRules.push({
+      name: cc.name,
+      color: cc.color,
+      detect: (patient, admission, diet, labs) => {
+        if (!admission || !admission.diagnosis) return false;
+        const regexStr = cc.keywords.split(',').map(k => k.trim()).filter(Boolean).join('|');
+        if (!regexStr) return false;
+        return new RegExp(regexStr, 'i').test(admission.diagnosis);
+      }
+    });
+  });
+
   // Get all municipalities
   const municipalities = [...new Set(db.patients.map(p => p.municipality).filter(Boolean))].sort();
 
@@ -969,9 +1154,11 @@ app.get('/api/analytics/conditions', requireRole(['admin', 'nutritionist', 'nurs
     const diet = db.diet_profiles.find(d => d.patient_id === p.patient_id) || null;
     const labs = db.lab_results.filter(l => l.patient_id === p.patient_id);
 
-    const detected = [];
+    const explicit = (db.patient_conditions || []).filter(c => c.patient_id === p.patient_id).map(c => c.condition_name);
+    const detected = [...explicit];
+    
     conditionRules.forEach(rule => {
-      if (rule.detect(p, activeAdmission, diet, labs)) {
+      if (!detected.includes(rule.name) && rule.detect(p, activeAdmission, diet, labs)) {
         detected.push(rule.name);
       }
     });
@@ -1050,7 +1237,53 @@ app.get('/api/analytics/conditions', requireRole(['admin', 'nutritionist', 'nurs
   });
 });
 
+// Add new custom condition rule
+app.post('/api/analytics/conditions', requireRole(['admin', 'nutritionist', 'nurse']), (req, res) => {
+  const db = readDB();
+  const { name, color, keywords } = req.body;
+
+  if (!name || !keywords) {
+    return res.status(400).json({ error: 'Name and keywords are required' });
+  }
+
+  db.reference_data = db.reference_data || {};
+  db.reference_data.custom_conditions = db.reference_data.custom_conditions || [];
+
+  const newCondition = {
+    id: Date.now().toString(),
+    name,
+    color: color || '#ffffff',
+    keywords
+  };
+
+  db.reference_data.custom_conditions.push(newCondition);
+  writeDB(db);
+
+  addActivity('analytics', `Added new tracking condition: ${name}`, null, 'info');
+
+  res.status(201).json({ message: 'Custom condition added successfully', condition: newCondition });
+});
+
 // Reference data accessors
+app.get('/api/reference/conditions', (req, res) => {
+  const db = readDB();
+  db.reference_data = db.reference_data || {};
+  const predefined = [
+    { name: 'Diabetes', color: '#f59e0b' },
+    { name: 'Hypertension', color: '#ef4444' },
+    { name: 'Chronic Kidney Disease', color: '#8b5cf6' },
+    { name: 'Heart Disease', color: '#ec4899' },
+    { name: 'Pneumonia', color: '#06b6d4' },
+    { name: 'Anemia', color: '#f97316' },
+    { name: 'Cancer', color: '#64748b' },
+    { name: 'Appendicitis', color: '#14b8a6' },
+    { name: 'Gastroenteritis', color: '#a3e635' },
+    { name: 'Asthma', color: '#3b82f6' }
+  ];
+  const custom = (db.reference_data.custom_conditions || []).map(c => ({ name: c.name, color: c.color }));
+  res.json([...predefined, ...custom]);
+});
+
 app.get('/api/reference/icd10', (req, res) => {
   const db = readDB();
   res.json(db.reference_data.icd10_packages);

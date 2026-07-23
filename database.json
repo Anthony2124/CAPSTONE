@@ -1,4 +1,134 @@
 {
+  "doctors": [
+    {
+      "doctor_id": 1,
+      "name": "Dr. Maria Reyes",
+      "specialization": "General Practitioner",
+      "photo_initials": "MR",
+      "color": "teal",
+      "available_days": [
+        "Monday",
+        "Wednesday",
+        "Friday"
+      ],
+      "time_slots": [
+        "08:00 AM",
+        "09:00 AM",
+        "10:00 AM",
+        "11:00 AM",
+        "01:00 PM",
+        "02:00 PM",
+        "03:00 PM",
+        "04:00 PM"
+      ],
+      "consultation_fee": 350,
+      "bio": "Specializes in primary care, preventive medicine, and general health consultations."
+    },
+    {
+      "doctor_id": 2,
+      "name": "Dr. Carlos Bautista",
+      "specialization": "Internal Medicine",
+      "photo_initials": "CB",
+      "color": "indigo",
+      "available_days": [
+        "Tuesday",
+        "Thursday",
+        "Saturday"
+      ],
+      "time_slots": [
+        "08:00 AM",
+        "09:00 AM",
+        "10:00 AM",
+        "11:00 AM",
+        "02:00 PM",
+        "03:00 PM"
+      ],
+      "consultation_fee": 500,
+      "bio": "Expert in adult diseases, diabetes management, hypertension, and kidney conditions."
+    },
+    {
+      "doctor_id": 3,
+      "name": "Dr. Anthony Nuñez",
+      "specialization": "Nutritionist-Dietitian",
+      "photo_initials": "AN",
+      "color": "emerald",
+      "available_days": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday"
+      ],
+      "time_slots": [
+        "08:00 AM",
+        "09:00 AM",
+        "10:00 AM",
+        "01:00 PM",
+        "02:00 PM",
+        "03:00 PM",
+        "04:00 PM"
+      ],
+      "consultation_fee": 400,
+      "bio": "Clinical dietitian specializing in Medical Nutrition Therapy, TER calculations, and therapeutic diet planning."
+    },
+    {
+      "doctor_id": 4,
+      "name": "Dr. Josephine Lim",
+      "specialization": "Pediatrics",
+      "photo_initials": "JL",
+      "color": "rose",
+      "available_days": [
+        "Monday",
+        "Wednesday",
+        "Friday"
+      ],
+      "time_slots": [
+        "09:00 AM",
+        "10:00 AM",
+        "11:00 AM",
+        "02:00 PM",
+        "03:00 PM",
+        "04:00 PM"
+      ],
+      "consultation_fee": 450,
+      "bio": "Specialist in child healthcare, growth monitoring, immunizations, and pediatric nutrition."
+    },
+    {
+      "doctor_id": 5,
+      "name": "Dr. Eduardo Santos",
+      "specialization": "Surgery",
+      "photo_initials": "ES",
+      "color": "amber",
+      "available_days": [
+        "Tuesday",
+        "Thursday"
+      ],
+      "time_slots": [
+        "08:00 AM",
+        "09:00 AM",
+        "10:00 AM",
+        "11:00 AM"
+      ],
+      "consultation_fee": 600,
+      "bio": "General surgeon with expertise in elective and emergency surgical procedures."
+    }
+  ],
+  "doctor_appointments": [
+    {
+      "appointment_id": 1784807597764,
+      "doctor_id": 2,
+      "doctor_name": "Dr. Carlos Bautista",
+      "doctor_specialization": "Internal Medicine",
+      "appointment_date": "2026-07-23",
+      "time_slot": "03:00 PM",
+      "patient_name": "Anthony Cordial",
+      "reason": "General Consultation",
+      "contact": "",
+      "status": "confirmed",
+      "booked_by": "anthonycordial2124@gmail.com",
+      "booked_at": "2026-07-23T11:53:17.764Z"
+    }
+  ],
   "patients": [
     {
       "patient_id": 1,
@@ -183,7 +313,7 @@
       "reason_for_visit": "General Consultation",
       "appointment_date": "2026-06-30",
       "queue_token": "OPD-MED-015",
-      "queue_status": "pending_approval",
+      "queue_status": "waiting",
       "queue_timestamp": "2026-06-30T13:14:31.322Z"
     },
     {
@@ -922,6 +1052,142 @@
   },
   "activity_log": [
     {
+      "id": 1784807723830,
+      "timestamp": "2026-07-23T11:55:23.830Z",
+      "type": "triage",
+      "message": "Patient Anthony Cordial APPROVED for queue. Reason: General Consultation",
+      "patient_id": 15,
+      "severity": "info"
+    },
+    {
+      "id": 1784807642380,
+      "timestamp": "2026-07-23T11:54:02.380Z",
+      "type": "auth",
+      "message": "Staff logged in: admin (admin)",
+      "patient_id": null,
+      "severity": "info"
+    },
+    {
+      "id": 1784807597766,
+      "timestamp": "2026-07-23T11:53:17.766Z",
+      "type": "triage",
+      "message": "Appointment booked: Anthony Cordial with Dr. Carlos Bautista on 2026-07-23 at 03:00 PM",
+      "patient_id": null,
+      "severity": "info"
+    },
+    {
+      "id": 1784807238681,
+      "timestamp": "2026-07-23T11:47:18.681Z",
+      "type": "auth",
+      "message": "Staff logged in: admin (admin)",
+      "patient_id": null,
+      "severity": "info"
+    },
+    {
+      "id": 1784807231824,
+      "timestamp": "2026-07-23T11:47:11.824Z",
+      "type": "auth",
+      "message": "Failed staff login attempt: anthonycordial2124@gmail.com (admin)",
+      "patient_id": null,
+      "severity": "warning"
+    },
+    {
+      "id": 1784807226904,
+      "timestamp": "2026-07-23T11:47:06.905Z",
+      "type": "auth",
+      "message": "Failed staff login attempt: anthonycordial2124@gmail.com (admin)",
+      "patient_id": null,
+      "severity": "warning"
+    },
+    {
+      "id": 1784807223803,
+      "timestamp": "2026-07-23T11:47:03.803Z",
+      "type": "auth",
+      "message": "Failed staff login attempt: anthonycordial2124@gmail.com (admin)",
+      "patient_id": null,
+      "severity": "warning"
+    },
+    {
+      "id": 1784807197620,
+      "timestamp": "2026-07-23T11:46:37.620Z",
+      "type": "auth",
+      "message": "Failed staff login attempt: anthonycordial2124@gmail.com (admin)",
+      "patient_id": null,
+      "severity": "warning"
+    },
+    {
+      "id": 1784778525219,
+      "timestamp": "2026-07-23T03:48:45.219Z",
+      "type": "auth",
+      "message": "Staff logged in: admin (admin)",
+      "patient_id": null,
+      "severity": "info"
+    },
+    {
+      "id": 1784521630573,
+      "timestamp": "2026-07-20T04:27:10.573Z",
+      "type": "auth",
+      "message": "Staff logged in: admin (admin)",
+      "patient_id": null,
+      "severity": "info"
+    },
+    {
+      "id": 1784520019781,
+      "timestamp": "2026-07-20T04:00:19.781Z",
+      "type": "auth",
+      "message": "Staff logged in: admin (admin)",
+      "patient_id": null,
+      "severity": "info"
+    },
+    {
+      "id": 1784519402921,
+      "timestamp": "2026-07-20T03:50:02.921Z",
+      "type": "auth",
+      "message": "Staff logged in: admin (admin)",
+      "patient_id": null,
+      "severity": "info"
+    },
+    {
+      "id": 1784519018411,
+      "timestamp": "2026-07-20T03:43:38.411Z",
+      "type": "auth",
+      "message": "Staff logged in: admin (admin)",
+      "patient_id": null,
+      "severity": "info"
+    },
+    {
+      "id": 1784518941930,
+      "timestamp": "2026-07-20T03:42:21.930Z",
+      "type": "auth",
+      "message": "Staff logged in: admin (admin)",
+      "patient_id": null,
+      "severity": "info"
+    },
+    {
+      "id": 1784518783077,
+      "timestamp": "2026-07-20T03:39:43.077Z",
+      "type": "auth",
+      "message": "Staff logged in: admin (admin)",
+      "patient_id": null,
+      "severity": "info"
+    },
+    {
+      "id": 1784518737570,
+      "timestamp": "2026-07-20T03:38:57.570Z",
+      "type": "auth",
+      "message": "Staff logged in: admin (admin)",
+      "patient_id": null,
+      "severity": "info"
+    },
+    {
+      "id": 1784518474349,
+      "timestamp": "2026-07-20T03:34:34.349Z",
+      "type": "auth",
+      "message": "Staff logged in: admin (admin)",
+      "patient_id": null,
+      "severity": "info"
+    },
+    {
       "id": 1784431321035,
       "timestamp": "2026-07-19T03:22:01.035Z",
       "type": "auth",
@@ -1180,142 +1446,6 @@
     {
       "id": 1783223691674,
       "timestamp": "2026-07-05T03:54:51.674Z",
-      "type": "auth",
-      "message": "Staff logged in: admin (admin)",
-      "patient_id": null,
-      "severity": "info"
-    },
-    {
-      "id": 1783223505566,
-      "timestamp": "2026-07-05T03:51:45.566Z",
-      "type": "auth",
-      "message": "Staff logged in: admin (admin)",
-      "patient_id": null,
-      "severity": "info"
-    },
-    {
-      "id": 1783223482422,
-      "timestamp": "2026-07-05T03:51:22.422Z",
-      "type": "auth",
-      "message": "Staff logged in: admin (admin)",
-      "patient_id": null,
-      "severity": "info"
-    },
-    {
-      "id": 1783222967687,
-      "timestamp": "2026-07-05T03:42:47.687Z",
-      "type": "auth",
-      "message": "Staff logged in: admin (admin)",
-      "patient_id": null,
-      "severity": "info"
-    },
-    {
-      "id": 1783222961729,
-      "timestamp": "2026-07-05T03:42:41.729Z",
-      "type": "auth",
-      "message": "Staff logged in: admin (admin)",
-      "patient_id": null,
-      "severity": "info"
-    },
-    {
-      "id": 1783144432412,
-      "timestamp": "2026-07-04T05:53:52.412Z",
-      "type": "auth",
-      "message": "Staff logged in: admin (admin)",
-      "patient_id": null,
-      "severity": "info"
-    },
-    {
-      "id": 1783140731100,
-      "timestamp": "2026-07-04T04:52:11.100Z",
-      "type": "auth",
-      "message": "Staff logged in: admin (admin)",
-      "patient_id": null,
-      "severity": "info"
-    },
-    {
-      "id": 1783043457882,
-      "timestamp": "2026-07-03T01:50:57.882Z",
-      "type": "auth",
-      "message": "Staff logged in: admin (admin)",
-      "patient_id": null,
-      "severity": "info"
-    },
-    {
-      "id": 1783042323842,
-      "timestamp": "2026-07-03T01:32:03.842Z",
-      "type": "triage",
-      "message": "New patient registered: Anthony Cordial (OPD-MED-023) — General Consultation",
-      "patient_id": 23,
-      "severity": "info"
-    },
-    {
-      "id": 1783042081562,
-      "timestamp": "2026-07-03T01:28:01.562Z",
-      "type": "triage",
-      "message": "New patient registered: Anthony Cordial (OPD-MED-022) — General Consultation",
-      "patient_id": 22,
-      "severity": "info"
-    },
-    {
-      "id": 1783041990206,
-      "timestamp": "2026-07-03T01:26:30.206Z",
-      "type": "triage",
-      "message": "New patient registered: Anthony Cordial (OPD-MED-021) — General Consultation",
-      "patient_id": 21,
-      "severity": "info"
-    },
-    {
-      "id": 1783041615599,
-      "timestamp": "2026-07-03T01:20:15.599Z",
-      "type": "triage",
-      "message": "New patient registered: Anthony Cordial (OPD-MED-020) — General Consultation",
-      "patient_id": 20,
-      "severity": "info"
-    },
-    {
-      "id": 1783041127415,
-      "timestamp": "2026-07-03T01:12:07.415Z",
-      "type": "triage",
-      "message": "New patient registered: Anthony Cordial (OPD-MED-019) — General Consultation",
-      "patient_id": 19,
-      "severity": "info"
-    },
-    {
-      "id": 1783040740031,
-      "timestamp": "2026-07-03T01:05:40.031Z",
-      "type": "triage",
-      "message": "New patient registered: Anthony Cordial (OPD-MED-018) — General Consultation",
-      "patient_id": 18,
-      "severity": "info"
-    },
-    {
-      "id": 1783040287410,
-      "timestamp": "2026-07-03T00:58:07.410Z",
-      "type": "triage",
-      "message": "New patient registered: Anthony Cordial (OPD-MED-017) — General Consultation",
-      "patient_id": 17,
-      "severity": "info"
-    },
-    {
-      "id": 1783039862679,
-      "timestamp": "2026-07-03T00:51:02.679Z",
-      "type": "triage",
-      "message": "New patient registered: Anthony Cordial (OPD-MED-016) — General Consultation",
-      "patient_id": 16,
-      "severity": "info"
-    },
-    {
-      "id": 1782825271323,
-      "timestamp": "2026-06-30T13:14:31.323Z",
-      "type": "triage",
-      "message": "New patient registered: Anthony Cordial (OPD-MED-015) — General Consultation",
-      "patient_id": 15,
-      "severity": "info"
-    },
-    {
-      "id": 1782824750905,
-      "timestamp": "2026-06-30T13:05:50.905Z",
       "type": "auth",
       "message": "Staff logged in: admin (admin)",
       "patient_id": null,

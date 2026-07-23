@@ -14,6 +14,12 @@ document.addEventListener('alpine:init', () => {
     return originalFetch(resource, config);
   };
 
+  window.getLocalYMD = () => {
+    const d = new Date();
+    d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+    return d.toISOString().split('T')[0];
+  };
+
   Alpine.data('dietsApp', () => ({
     // ===== STATE VARIABLES =====
     view: 'dashboard',
@@ -63,8 +69,21 @@ document.addEventListener('alpine:init', () => {
       municipality: 'Baler',
       reason_for_visit: 'General Consultation',
       other_reason_for_visit: '',
-      appointment_date: new Date().toISOString().split('T')[0]
+      appointment_date: window.getLocalYMD()
     },
+
+    // ===== DOCTOR SCHEDULE STATE =====
+    doctors: [],
+    selectedDoctor: null,
+    doctorAvailableSlots: [],
+    doctorBookingDate: window.getLocalYMD(),
+    selectedTimeSlot: null,
+    doctorSlotsLoading: false,
+    doctorSlotsData: null,
+    doctorBookingConfirmed: null,
+    docScheduleError: '',
+    appointmentStep: 1, // 1=select doctor, 2=select date/time, 3=confirm
+    doctorAppointments: [], // For admin view
 
     // Hardcoded credentials per role
     credentials: {
@@ -73,7 +92,7 @@ document.addEventListener('alpine:init', () => {
       nurse:        { password: 'nurse123', username: 'nurse',        label: 'Nurse',                  displayName: 'Nurse Station',   allowedViews: ['dashboard','triage','ehr','ward'] },
       billing:      { password: 'bill123',  username: 'billing',      label: 'Billing Clerk',          displayName: 'Billing Dept.',   allowedViews: ['dashboard','billing'] },
       frontdesk:    { password: 'desk123',  username: 'frontdesk',    label: 'Front Desk Staff',       displayName: 'Front Desk',      allowedViews: ['triage'] },
-      patient:      { label: 'Patient', allowedViews: ['patient_home', 'patient_records', 'register'] } // Handled via API
+      patient:      { label: 'Patient', allowedViews: ['patient_home', 'patient_records', 'register', 'doctor_schedule'] } // Handled via API
     },
 
     // ===== PRINT SLIP =====
@@ -112,6 +131,11 @@ document.addEventListener('alpine:init', () => {
     admissions: [],
     selectedPatient: null,
     patientDetail: null,
+    patientConditionForm: {
+      condition: '',
+      status: 'New'
+    },
+    referenceConditions: [],
     labForm: {
       fbs: '',
       creatinine: '',
@@ -175,6 +199,7 @@ document.addEventListener('alpine:init', () => {
     chartInstances: {},
     conditionData: {},
     conditionFilter: 'all',
+    newConditionForm: { name: '', keywords: '' },
 
     // ===== INIT INTERFACES =====
     async init() {
@@ -186,6 +211,13 @@ document.addEventListener('alpine:init', () => {
         if (newView === 'analytics') {
           this.loadConditionData();
           setTimeout(() => this.renderAnalytics(), 100);
+        }
+        if (newView === 'register' || newView === 'doctor_schedule') {
+          this.resetDoctorBooking();
+          if (this.doctors.length === 0) this.loadDoctors();
+        }
+        if (newView === 'triage' && this.currentRole !== 'patient') {
+          this.loadDoctorAppointments();
         }
       });
 
@@ -462,7 +494,7 @@ document.addEventListener('alpine:init', () => {
             municipality: data.municipality,
             contact: data.contact || 'N/A',
             reason_for_visit: data.reason_for_visit || 'General Consultation',
-            appointment_date: data.appointment_date || new Date().toISOString().split('T')[0],
+            appointment_date: data.appointment_date || window.getLocalYMD(),
             queue_token: data.queue_token,
             queue_position: data.queue_position || '—',
             registered_at: new Date().toLocaleString('en-PH', {
@@ -482,7 +514,7 @@ document.addEventListener('alpine:init', () => {
             municipality: 'Baler',
             reason_for_visit: 'General Consultation',
             other_reason_for_visit: '',
-            appointment_date: new Date().toISOString().split('T')[0]
+            appointment_date: window.getLocalYMD()
           };
         } else {
           const errData = await res.json();
@@ -493,6 +525,143 @@ document.addEventListener('alpine:init', () => {
       } catch (err) {
         console.error(err);
         this.loginError = 'Connection error. Please try again.';
+      }
+    },
+
+    // ===== DOCTOR SCHEDULE METHODS =====
+
+    // Load all doctors
+    async loadDoctors() {
+      try {
+        const res = await fetch('/api/doctors');
+        if (res.ok) {
+          this.doctors = await res.json();
+        }
+      } catch (err) {
+        console.error('Error loading doctors:', err);
+      }
+    },
+
+    // Select a doctor and advance to step 2
+    selectDoctor(doctor) {
+      this.selectedDoctor = doctor;
+      this.selectedTimeSlot = null;
+      this.doctorSlotsData = null;
+      this.doctorAvailableSlots = [];
+      this.docScheduleError = '';
+      this.appointmentStep = 2;
+      // Auto-load slots for current date
+      this.loadDoctorSlots();
+    },
+
+    // Load available slots for the selected doctor and chosen date
+    async loadDoctorSlots() {
+      if (!this.selectedDoctor) return;
+      this.doctorSlotsLoading = true;
+      this.selectedTimeSlot = null;
+      this.docScheduleError = '';
+      this.doctorAvailableSlots = [];
+      this.doctorSlotsData = null;
+
+      try {
+        const res = await fetch(`/api/doctors/available-slots?doctor_id=${this.selectedDoctor.doctor_id}&date=${this.doctorBookingDate}`);
+        if (res.ok) {
+          const data = await res.json();
+          this.doctorSlotsData = data;
+          this.doctorAvailableSlots = data.slots || [];
+          if (!data.available) {
+            this.docScheduleError = data.message || 'Doctor not available on this day.';
+          }
+        } else {
+          this.docScheduleError = 'Could not fetch available slots.';
+        }
+      } catch (err) {
+        console.error('Error loading slots:', err);
+        this.docScheduleError = 'Connection error. Please try again.';
+      } finally {
+        this.doctorSlotsLoading = false;
+      }
+    },
+
+    // Select a time slot and go to confirmation step
+    selectTimeSlot(slot) {
+      this.selectedTimeSlot = slot;
+      this.appointmentStep = 3;
+    },
+
+    // Book the doctor appointment
+    async bookDoctorAppointment() {
+      if (!this.selectedDoctor || !this.doctorBookingDate || !this.selectedTimeSlot) {
+        this.docScheduleError = 'Please complete all appointment details.';
+        return;
+      }
+
+      const patientName = this.currentUser || 'Patient';
+
+      try {
+        const res = await fetch('/api/doctors/book-appointment', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            doctor_id: this.selectedDoctor.doctor_id,
+            appointment_date: this.doctorBookingDate,
+            time_slot: this.selectedTimeSlot,
+            patient_name: patientName,
+            reason: this.patientRegForm.reason_for_visit || 'General Consultation',
+            contact: this.patientRegForm.contact || ''
+          })
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          this.doctorBookingConfirmed = data;
+          this.appointmentStep = 4; // Success step
+          this.addToast('Appointment Confirmed!', `Booked with ${data.doctor_name} on ${data.appointment_date} at ${data.time_slot}`, 'info');
+        } else {
+          const errData = await res.json();
+          this.docScheduleError = errData.error || 'Booking failed. Please try again.';
+        }
+      } catch (err) {
+        console.error(err);
+        this.docScheduleError = 'Connection error. Please try again.';
+      }
+    },
+
+    // Reset the doctor booking flow
+    resetDoctorBooking() {
+      this.selectedDoctor = null;
+      this.selectedTimeSlot = null;
+      this.doctorAvailableSlots = [];
+      this.doctorSlotsData = null;
+      this.doctorBookingConfirmed = null;
+      this.docScheduleError = '';
+      this.appointmentStep = 1;
+      this.doctorBookingDate = window.getLocalYMD();
+    },
+
+    // Load doctor appointments (admin/staff)
+    async loadDoctorAppointments() {
+      try {
+        const res = await fetch('/api/doctors/appointments');
+        if (res.ok) {
+          this.doctorAppointments = await res.json();
+        }
+      } catch (err) {
+        console.error('Error loading appointments:', err);
+      }
+    },
+
+    // Cancel a doctor appointment (admin/staff)
+    async cancelDoctorAppointment(appointmentId) {
+      if (!confirm('Are you sure you want to cancel this appointment?')) return;
+      try {
+        const res = await fetch(`/api/doctors/appointments/${appointmentId}`, { method: 'DELETE' });
+        if (res.ok) {
+          await this.loadDoctorAppointments();
+          this.addToast('Appointment Cancelled', 'The appointment has been cancelled.', 'warning');
+        }
+      } catch (err) {
+        console.error(err);
       }
     },
 
@@ -633,6 +802,12 @@ document.addEventListener('alpine:init', () => {
           this.loadDrugWarnings();
           this.loadKitchenTickets();
           break;
+        case 'appointment:booked':
+          if (this.view === 'triage') this.loadDoctorAppointments();
+          break;
+        case 'appointment:cancelled':
+          if (this.view === 'triage') this.loadDoctorAppointments();
+          break;
       }
     },
 
@@ -647,7 +822,8 @@ document.addEventListener('alpine:init', () => {
           this.loadDietProfiles(),
           this.loadWards(),
           this.loadKitchenTickets(),
-          this.loadReferenceData()
+          this.loadReferenceData(),
+          this.loadDoctors()
         ]);
         await this.loadDrugWarnings();
       } catch (err) {
@@ -749,6 +925,9 @@ document.addEventListener('alpine:init', () => {
 
       const templatesRes = await fetch('/api/reference/diets');
       if (templatesRes.ok) this.dietTemplates = await templatesRes.json();
+
+      const condRes = await fetch('/api/reference/conditions');
+      if (condRes.ok) this.referenceConditions = await condRes.json();
     },
 
     async loadDrugWarnings() {
@@ -847,6 +1026,33 @@ document.addEventListener('alpine:init', () => {
         console.error("Error selecting patient:", err);
       } finally {
         this.loading = false;
+      }
+    },
+
+    async addPatientCondition() {
+      if (!this.patientConditionForm.condition) return;
+      try {
+        const res = await fetch(`/api/patients/${this.patientDetail.patient.patient_id}/conditions`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            condition_name: this.patientConditionForm.condition,
+            status: this.patientConditionForm.status
+          })
+        });
+        if (res.ok) {
+          this.addToast('Condition Tagged', `Successfully flagged ${this.patientConditionForm.condition}.`, 'info');
+          this.patientConditionForm.condition = '';
+          this.patientConditionForm.status = 'New';
+          // Refresh patient detail to show new condition
+          await this.selectPatient(this.patientDetail.patient.patient_id);
+        } else {
+          const errData = await res.json();
+          this.addToast('Action Failed', errData.error || 'Could not add condition.', 'critical');
+        }
+      } catch (err) {
+        console.error(err);
+        this.addToast('Action Failed', 'Network error.', 'critical');
       }
     },
 
@@ -1249,6 +1455,32 @@ document.addEventListener('alpine:init', () => {
 
     // ===== ANALYTICS & REPORTING =====
 
+    async addCustomCondition() {
+      try {
+        const res = await fetch('/api/analytics/conditions', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: this.newConditionForm.name,
+            keywords: this.newConditionForm.keywords,
+            color: '#' + Math.floor(Math.random()*16777215).toString(16).padStart(6, '0') // Random color for charts
+          })
+        });
+        
+        if (res.ok) {
+          this.addToast('Condition Tracked', `Now tracking "${this.newConditionForm.name}" across patient diagnoses.`, 'info');
+          this.newConditionForm = { name: '', keywords: '' };
+          await this.loadConditionData();
+        } else {
+          const errData = await res.json();
+          this.addToast('Action Failed', errData.error || 'Failed to add condition.', 'critical');
+        }
+      } catch (err) {
+        console.error(err);
+        this.addToast('Action Failed', 'Network error.', 'critical');
+      }
+    },
+
     async loadConditionData() {
       try {
         const res = await fetch('/api/analytics/conditions');
@@ -1475,6 +1707,12 @@ document.addEventListener('alpine:init', () => {
     },
 
     // ===== ALERTS/TOAST UTILITIES =====
+    formatTime(isoString) {
+      if (!isoString) return '';
+      const d = new Date(isoString);
+      return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    },
+
     addToast(title, message, type = 'info') {
       const id = Date.now();
       this.toasts.unshift({ id, title, message, type });

@@ -1052,6 +1052,38 @@
   },
   "activity_log": [
     {
+      "id": 1784866504398,
+      "timestamp": "2026-07-24T04:15:04.398Z",
+      "type": "auth",
+      "message": "Staff logged in: admin (admin)",
+      "patient_id": null,
+      "severity": "info"
+    },
+    {
+      "id": 1784866397894,
+      "timestamp": "2026-07-24T04:13:17.894Z",
+      "type": "auth",
+      "message": "Staff logged in: admin (admin)",
+      "patient_id": null,
+      "severity": "info"
+    },
+    {
+      "id": 1784866375132,
+      "timestamp": "2026-07-24T04:12:55.132Z",
+      "type": "auth",
+      "message": "Failed staff login attempt: anthonycordial2124@gmail.com (admin)",
+      "patient_id": null,
+      "severity": "warning"
+    },
+    {
+      "id": 1784865763454,
+      "timestamp": "2026-07-24T04:02:43.454Z",
+      "type": "auth",
+      "message": "Staff logged in: admin (admin)",
+      "patient_id": null,
+      "severity": "info"
+    },
+    {
       "id": 1784807723830,
       "timestamp": "2026-07-23T11:55:23.830Z",
       "type": "triage",
@@ -1414,38 +1446,6 @@
     {
       "id": 1783225601382,
       "timestamp": "2026-07-05T04:26:41.382Z",
-      "type": "auth",
-      "message": "Staff logged in: admin (admin)",
-      "patient_id": null,
-      "severity": "info"
-    },
-    {
-      "id": 1783225592843,
-      "timestamp": "2026-07-05T04:26:32.843Z",
-      "type": "auth",
-      "message": "Failed staff login attempt: admin (admin)",
-      "patient_id": null,
-      "severity": "warning"
-    },
-    {
-      "id": 1783224034701,
-      "timestamp": "2026-07-05T04:00:34.701Z",
-      "type": "auth",
-      "message": "Staff logged in: admin (admin)",
-      "patient_id": null,
-      "severity": "info"
-    },
-    {
-      "id": 1783223699160,
-      "timestamp": "2026-07-05T03:54:59.160Z",
-      "type": "auth",
-      "message": "Failed staff login attempt: adminadmin (admin)",
-      "patient_id": null,
-      "severity": "warning"
-    },
-    {
-      "id": 1783223691674,
-      "timestamp": "2026-07-05T03:54:51.674Z",
       "type": "auth",
       "message": "Staff logged in: admin (admin)",
       "patient_id": null,

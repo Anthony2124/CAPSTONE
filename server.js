@@ -103,12 +103,46 @@ app.get('/api/doctors/available-slots', (req, res) => {
     return res.json({ available: false, day: dayOfWeek, slots: [], message: `Dr. ${doctor.name.split(' ').pop()} is not available on ${dayOfWeek}s. Please pick a different date.` });
   }
 
+  const now = new Date();
+  const optionsDate = { timeZone: 'Asia/Manila', year: 'numeric', month: '2-digit', day: '2-digit' };
+  const formatter = new Intl.DateTimeFormat('en-US', optionsDate);
+  const manilaDateParts = formatter.formatToParts(now);
+  const currentYMD = `${manilaDateParts.find(p => p.type === 'year').value}-${manilaDateParts.find(p => p.type === 'month').value}-${manilaDateParts.find(p => p.type === 'day').value}`;
+  
+  const optionsTime = { timeZone: 'Asia/Manila', hour12: false, hour: '2-digit', minute: '2-digit' };
+  const currentTimeStr = now.toLocaleTimeString('en-US', optionsTime);
+
+  function parseTimeSlotTo24H(slotStr) {
+    if (!slotStr) return '00:00';
+    const parts = slotStr.split(' ');
+    if (parts.length < 2) return slotStr;
+    const time = parts[0];
+    const modifier = parts[1];
+    let [hours, minutes] = time.split(':');
+    if (hours === '12') hours = '00';
+    if (modifier === 'PM') hours = (parseInt(hours, 10) + 12).toString();
+    return `${hours.toString().padStart(2, '0')}:${minutes}`;
+  }
+
+  if (dateStr < currentYMD) {
+    return res.json({ available: false, day: dayOfWeek, slots: [], message: 'Cannot book appointments in the past.' });
+  }
+
+  const isToday = dateStr === currentYMD;
+
   // Get already booked slots for this doctor on this date
   const bookedSlots = db.doctor_appointments
     .filter(a => a.doctor_id === doctorId && a.appointment_date === dateStr && a.status !== 'cancelled')
     .map(a => a.time_slot);
 
-  const availableSlots = doctor.time_slots.filter(slot => !bookedSlots.includes(slot));
+  const availableSlots = doctor.time_slots.filter(slot => {
+    if (bookedSlots.includes(slot)) return false;
+    if (isToday) {
+      const slot24H = parseTimeSlotTo24H(slot);
+      if (slot24H <= currentTimeStr) return false;
+    }
+    return true;
+  });
 
   res.json({
     available: true,
@@ -176,7 +210,39 @@ app.post('/api/doctors/book-appointment', requireRole(['admin', 'nurse', 'frontd
 app.get('/api/doctors/appointments', requireRole(['admin', 'nurse', 'frontdesk']), (req, res) => {
   const db = readDB();
   db.doctor_appointments = db.doctor_appointments || [];
-  const sorted = [...db.doctor_appointments].sort((a, b) => new Date(a.appointment_date + 'T' + a.time_slot) - new Date(b.appointment_date + 'T' + b.time_slot));
+
+  const now = new Date();
+  const optionsDate = { timeZone: 'Asia/Manila', year: 'numeric', month: '2-digit', day: '2-digit' };
+  const formatter = new Intl.DateTimeFormat('en-US', optionsDate);
+  const manilaDateParts = formatter.formatToParts(now);
+  const currentYMD = `${manilaDateParts.find(p => p.type === 'year').value}-${manilaDateParts.find(p => p.type === 'month').value}-${manilaDateParts.find(p => p.type === 'day').value}`;
+  
+  const optionsTime = { timeZone: 'Asia/Manila', hour12: false, hour: '2-digit', minute: '2-digit' };
+  const currentTimeStr = now.toLocaleTimeString('en-US', optionsTime);
+
+  function parseTimeSlotTo24H(slotStr) {
+    if (!slotStr) return '00:00';
+    const parts = slotStr.split(' ');
+    if (parts.length < 2) return slotStr;
+    const time = parts[0];
+    const modifier = parts[1];
+    let [hours, minutes] = time.split(':');
+    if (hours === '12') hours = '00';
+    if (modifier === 'PM') hours = (parseInt(hours, 10) + 12).toString();
+    return `${hours.toString().padStart(2, '0')}:${minutes}`;
+  }
+
+  // Filter out appointments that are finished
+  let activeAppointments = db.doctor_appointments.filter(a => {
+    if (a.appointment_date < currentYMD) return false;
+    if (a.appointment_date === currentYMD) {
+      const slot24H = parseTimeSlotTo24H(a.time_slot);
+      if (slot24H <= currentTimeStr) return false;
+    }
+    return true;
+  });
+
+  const sorted = activeAppointments.sort((a, b) => new Date(a.appointment_date + 'T' + parseTimeSlotTo24H(a.time_slot)) - new Date(b.appointment_date + 'T' + parseTimeSlotTo24H(b.time_slot)));
   res.json(sorted);
 });
 
@@ -336,8 +402,20 @@ app.post('/api/patients/:id/conditions', requireRole(['admin', 'nutritionist', '
 // Get lobby triage queue (staff only)
 app.get('/api/queue', requireRole(['admin', 'nurse', 'frontdesk']), (req, res) => {
   const db = readDB();
+
+  const now = new Date();
+  const optionsDate = { timeZone: 'Asia/Manila', year: 'numeric', month: '2-digit', day: '2-digit' };
+  const formatter = new Intl.DateTimeFormat('en-US', optionsDate);
+  const manilaDateParts = formatter.formatToParts(now);
+  const currentYMD = `${manilaDateParts.find(p => p.type === 'year').value}-${manilaDateParts.find(p => p.type === 'month').value}-${manilaDateParts.find(p => p.type === 'day').value}`;
+
   const queue = db.patients
     .filter(p => p.queue_status && p.queue_status !== 'not_queued' && p.queue_status !== 'denied')
+    .filter(p => {
+      // Remove patients whose scheduled date has already passed
+      if (p.appointment_date && p.appointment_date < currentYMD) return false;
+      return true;
+    })
     .sort((a, b) => new Date(a.queue_timestamp) - new Date(b.queue_timestamp));
   res.json(queue);
 });
